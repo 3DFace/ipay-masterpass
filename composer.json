@@ -24,7 +24,7 @@
 			"dface\\IPayMasterPass\\": ["lib/"]
 		},
 		"psr-0": {
-			"dface\\IPayMasterPas\\": ["gen/"]
+			"dface\\IPayMasterPass\\": ["gen/"]
 		}
 	},
 	"autoload-dev": {
