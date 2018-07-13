@@ -1,0 +1,35 @@
+{
+	"name": "dface/ipay-masterpass",
+	"description": "A PHP client library to work with IPay MasterPass API",
+	"keywords": ["IPay", "MasterPass"],
+	"type": "library",
+	"license": "MIT",
+	"authors": [{
+		"name": "Denis Ponomarev",
+		"email": "ponomarev@gmail.com"
+	}],
+	"require": {
+		"php": ">=7.1",
+		"psr/log": "^1.0",
+		"guzzlehttp/guzzle": "^6.2"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^6.3",
+		"dface/code-gen": "dev-master",
+		"dface/tito": "dev-master",
+		"roave/security-advisories": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"dface\\IPayMasterPass\\": ["lib/"]
+		},
+		"psr-0": {
+			"dface\\IPayMasterPas\\": ["gen/"]
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"dface\\IPayMasterPass\\": "tests/"
+		}
+	}
+}
