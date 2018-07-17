@@ -57,12 +57,14 @@ class IPayAgent
 	/**
 	 * @param string $userId
 	 * @param string $phoneNumber
+	 * @param $info
+	 * @param null|string $description
 	 * @return string
 	 * @throws IPayAgentError
 	 */
-	public function initWidgetSession(string $userId, string $phoneNumber) : string
+	public function initWidgetSession(string $userId, string $phoneNumber, $info, ?string $description) : string
 	{
-		$action = new ActionInitWidgetSession($userId, $phoneNumber, null, null);
+		$action = new ActionInitWidgetSession($userId, $phoneNumber, $info, $description);
 		/** @var ActionInitWidgetSessionResponse $x */
 		$x = $this->doRequest('InitWidgetSession', $action, ActionInitWidgetSessionResponse::class);
 		return $x->getSession();
