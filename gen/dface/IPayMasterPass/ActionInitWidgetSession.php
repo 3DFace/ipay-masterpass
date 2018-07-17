@@ -10,7 +10,7 @@ class ActionInitWidgetSession implements \JsonSerializable {
 	private $user_id;
 	/** @var string */
 	private $msisdn;
-	/** @var string */
+	/** @var mixed */
 	private $pmt_info;
 	/** @var string */
 	private $pmt_desc;
@@ -18,7 +18,7 @@ class ActionInitWidgetSession implements \JsonSerializable {
 	public function __construct(
 		string $user_id,
 		string $msisdn,
-		?string $pmt_info,
+		$pmt_info,
 		?string $pmt_desc
 	){
 		$this->user_id = $user_id;
@@ -42,9 +42,9 @@ class ActionInitWidgetSession implements \JsonSerializable {
 	}
 
 	/**
-	 * @return string
+	 * @return mixed
 	 */
-	public function getPmtInfo() : ?string {
+	public function getPmtInfo(){
 		return $this->pmt_info;
 	}
 
@@ -98,8 +98,7 @@ class ActionInitWidgetSession implements \JsonSerializable {
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_info' not specified");
 		}
-		$pmt_info = $pmt_info !== null ? (string)$pmt_info : null;
-
+		
 		if(array_key_exists('pmt_desc', $arr)){
 			$pmt_desc = $arr['pmt_desc'];
 		}else{

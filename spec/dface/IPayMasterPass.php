@@ -50,7 +50,7 @@ return [
 	'ActionInitWidgetSession' => [
 		'user_id' => 'string',
 		'msisdn' => 'string',
-		'pmt_info' => ['type' => 'string', 'null' => true],
+		'pmt_info' => ['type' => 'mixed', 'null' => true],
 		'pmt_desc' => ['type' => 'string', 'null' => true],
 	],
 
