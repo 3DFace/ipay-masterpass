@@ -16,23 +16,28 @@ class IPayAgentClient
 	private $logger;
 	/** @var IPayTimeService */
 	private $timeService;
+	/** @var IPayAgentSigner */
+	private $agentSigner;
 
 	/**
 	 * @param AgentSettings $settings
 	 * @param IPayHttpClient $client
 	 * @param LoggerInterface $logger
 	 * @param IPayTimeService $timeService
+	 * @param IPayAgentSigner $agentSigner
 	 */
 	public function __construct(
 		AgentSettings $settings,
 		IPayHttpClient $client,
 		LoggerInterface $logger,
-		IPayTimeService $timeService
+		IPayTimeService $timeService,
+		IPayAgentSigner $agentSigner
 	) {
 		$this->settings = $settings;
 		$this->client = $client;
 		$this->logger = $logger;
 		$this->timeService = $timeService;
+		$this->agentSigner = $agentSigner;
 	}
 
 	/**
@@ -46,14 +51,14 @@ class IPayAgentClient
 	{
 
 		$time = $this->timeService->getCurrentTime();
-		$sign = md5($time->format('Y-m-d H:i:s').$this->settings->getSignKey());
+		$sign = $this->agentSigner->sign($time);
 		$auth = new RequestAuth($this->settings->getMerchantId(), $time, $sign);
 		$request = new Request($auth, $actionName, $action);
 
 		$request_arr = ['request' => $request->jsonSerialize()];
 
 		$json_request = json_encode($request_arr, JSON_UNESCAPED_UNICODE);
-		if($json_request === null){
+		if ($json_request === null) {
 			$log_req = print_r($request, true);
 			$err_msg = json_last_error_msg();
 			$this->logger->error("Cant json-serialize '$actionName' request: $log_req, \n$err_msg");
