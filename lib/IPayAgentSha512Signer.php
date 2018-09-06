@@ -16,7 +16,10 @@ class IPayAgentSha512Signer implements IPayAgentSigner
 
 	public function sign(\DateTimeImmutable $time) : string
 	{
-		return md5($time->format('Y-m-d H:i:s').$this->settings->getSignKey());
+		$str = $this->settings->getMerchantId()
+			.$this->settings->getSignKey()
+			.$time->format('Y-m-d H:i:s');
+		return hash('sha512', $str);
 	}
 
 }
