@@ -2,30 +2,15 @@
 
 namespace dface\IPayMasterPass;
 
-use Psr\Log\LoggerInterface;
-
 class IPayAgent
 {
 
-	/** @var AgentSettings */
-	private $settings;
-	/** @var IPayHttpClient */
-	private $client;
-	/** @var LoggerInterface */
-	private $logger;
-	/** @var IPayTimeService */
-	private $timeService;
+	/** @var IPayAgentClient */
+	private $agentClient;
 
-	public function __construct(
-		AgentSettings $settings,
-		IPayHttpClient $client,
-		LoggerInterface $logger,
-		IPayTimeService $timeService
-	) {
-		$this->settings = $settings;
-		$this->client = $client;
-		$this->logger = $logger;
-		$this->timeService = $timeService;
+	public function __construct(IPayAgentClient $agentClient)
+	{
+		$this->agentClient = $agentClient;
 	}
 
 	/**
@@ -37,7 +22,7 @@ class IPayAgent
 	public function getUserStatus(string $userId, string $phoneNumber) : string
 	{
 		/** @var ActionCheckResponse $x */
-		$x = $this->doRequest('Check', new ActionCheck($userId, $phoneNumber), ActionCheckResponse::class);
+		$x = $this->agentClient->doRequest('Check', new ActionCheck($userId, $phoneNumber), ActionCheckResponse::class);
 		return $x->getUserStatus();
 	}
 
@@ -50,7 +35,7 @@ class IPayAgent
 	public function getCardList(string $userId, string $phoneNumber) : array
 	{
 		/** @var ActionListResponse $list */
-		$list = $this->doRequest('List', new ActionList($userId, $phoneNumber), ActionListResponse::class);
+		$list = $this->agentClient->doRequest('List', new ActionList($userId, $phoneNumber), ActionListResponse::class);
 		return array_values($list->getCards());
 	}
 
@@ -66,7 +51,7 @@ class IPayAgent
 	{
 		$action = new ActionInitWidgetSession($userId, $phoneNumber, $info, $description);
 		/** @var ActionInitWidgetSessionResponse $x */
-		$x = $this->doRequest('InitWidgetSession', $action, ActionInitWidgetSessionResponse::class);
+		$x = $this->agentClient->doRequest('InitWidgetSession', $action, ActionInitWidgetSessionResponse::class);
 		return $x->getSession();
 	}
 
@@ -79,7 +64,8 @@ class IPayAgent
 	public function invite(string $userId, string $phoneNumber) : string
 	{
 		/** @var ActionInviteResponse $x */
-		$x = $this->doRequest('Invite', new ActionInvite($userId, $phoneNumber), ActionInviteResponse::class);
+		$x = $this->agentClient->doRequest('Invite', new ActionInvite($userId, $phoneNumber),
+			ActionInviteResponse::class);
 		return $x->getToken();
 	}
 
@@ -100,7 +86,7 @@ class IPayAgent
 		string $error_url
 	) : string {
 		/** @var ActionInviteByUrlResponse $x */
-		$x = $this->doRequest('InviteByURL',
+		$x = $this->agentClient->doRequest('InviteByURL',
 			new ActionInviteByUrl($userId, $phoneNumber, $lang, $success_url, $error_url),
 			ActionInviteByUrlResponse::class);
 		return $x->getUrl();
@@ -123,7 +109,7 @@ class IPayAgent
 		string $error_url
 	) : string {
 		/** @var ActionRegisterByUrlResponse $x */
-		$x = $this->doRequest('RegisterByURL',
+		$x = $this->agentClient->doRequest('RegisterByURL',
 			new ActionRegisterByUrl($userId, $phoneNumber, $lang, $success_url, $error_url),
 			ActionRegisterByUrlResponse::class);
 		return $x->getUrl();
@@ -147,7 +133,7 @@ class IPayAgent
 	) : string {
 		/** @var ActionAddCardByUrlResponse $x */
 		/** @noinspection SpellCheckingInspection */
-		$x = $this->doRequest('AddcardByURL',
+		$x = $this->agentClient->doRequest('AddcardByURL',
 			new ActionAddCardByUrl($userId, $phoneNumber, $lang, $success_url, $error_url),
 			ActionAddCardByUrlResponse::class);
 		return $x->getUrl();
@@ -163,7 +149,7 @@ class IPayAgent
 	public function deleteCard(string $userId, string $phoneNumber, string $card_alias) : bool
 	{
 		/** @var ActionDeleteCardResponse $x */
-		$x = $this->doRequest('DeleteCard', new ActionDeleteCard($userId, $phoneNumber, $card_alias),
+		$x = $this->agentClient->doRequest('DeleteCard', new ActionDeleteCard($userId, $phoneNumber, $card_alias),
 			ActionDeleteCardResponse::class);
 		return $x->getStatus() === 'OK';
 	}
@@ -179,7 +165,7 @@ class IPayAgent
 	public function otp(string $userId, string $phoneNumber, string $token, string $received_code) : bool
 	{
 		/** @var ActionOtpResponse $x */
-		$x = $this->doRequest('Otp', new ActionOtp($userId, $phoneNumber, $token, $received_code),
+		$x = $this->agentClient->doRequest('Otp', new ActionOtp($userId, $phoneNumber, $token, $received_code),
 			ActionOtpResponse::class);
 		return $x->getStatus() === 'OK';
 	}
@@ -210,7 +196,7 @@ class IPayAgent
 			$cardAlias,
 			new ActionPmtInfo($userPhone, $amount),
 			$description);
-		return $this->doRequest('PaymentCreate', $create, ActionPaymentResponse::class);
+		return $this->agentClient->doRequest('PaymentCreate', $create, ActionPaymentResponse::class);
 	}
 
 	/**
@@ -220,7 +206,7 @@ class IPayAgent
 	 */
 	public function salePayment(ActionPaymentSale $confirm) : ActionPaymentResponse
 	{
-		return $this->doRequest('PaymentSale', $confirm, ActionPaymentResponse::class);
+		return $this->agentClient->doRequest('PaymentSale', $confirm, ActionPaymentResponse::class);
 	}
 
 	/**
@@ -230,7 +216,7 @@ class IPayAgent
 	 */
 	public function cancelPayment(ActionPaymentCancel $cancel) : ActionPaymentResponse
 	{
-		return $this->doRequest('PaymentCancel', $cancel, ActionPaymentResponse::class);
+		return $this->agentClient->doRequest('PaymentCancel', $cancel, ActionPaymentResponse::class);
 	}
 
 	/**
@@ -242,71 +228,9 @@ class IPayAgent
 	 */
 	public function paymentStatus(string $userId, string $phoneNumber, string $paymentId)
 	{
-		return $this->doRequest('StatusRequest', new ActionPaymentStatusRequest($userId, $phoneNumber, $paymentId),
+		return $this->agentClient->doRequest('StatusRequest',
+			new ActionPaymentStatusRequest($userId, $phoneNumber, $paymentId),
 			ActionPaymentResponse::class);
-	}
-
-	/**
-	 * @param string $actionName
-	 * @param \JsonSerializable $action
-	 * @param string $responseClass
-	 * @return mixed
-	 * @throws IPayAgentError
-	 */
-	private function doRequest(string $actionName, \JsonSerializable $action, string $responseClass)
-	{
-
-		$time = $this->timeService->getCurrentTime();
-		$sign = md5($time->format('Y-m-d H:i:s').$this->settings->getSignKey());
-		$auth = new RequestAuth($this->settings->getMerchantId(), $time, $sign);
-		$request = new Request($auth, $actionName, $action);
-
-		$request_arr = ['request' => $request->jsonSerialize()];
-
-		$json_request = json_encode($request_arr, JSON_UNESCAPED_UNICODE);
-		if($json_request === null){
-			$log_req = print_r($request, true);
-			$err_msg = json_last_error_msg();
-			$this->logger->error("Cant json-serialize '$actionName' request: $log_req, \n$err_msg");
-			throw new IPayAgentError('Invalid Request');
-		}
-
-		$log_data = $request_arr;
-		unset($log_data['request']['auth']);
-		$this->logger->info("$actionName: ".json_encode($log_data, JSON_UNESCAPED_UNICODE));
-
-		try{
-			$response_json = $this->client->post($this->settings->getUrl(), $json_request);
-			$this->logger->info("$actionName: $response_json");
-		}catch (\Exception $e){
-			$this->logger->error("'$actionName' failed: ".$e->getMessage(), [$e]);
-			throw new IPayAgentError("'$actionName' failed: ".$e->getMessage()."\n");
-		}
-
-		$response_arr = json_decode($response_json, true);
-		if ($response_arr === null) {
-			$this->logger->error("Invalid '$actionName' response format");
-			throw new IPayAgentError("Invalid '$actionName' response format");
-		}
-
-		if (!isset($response_arr['response'])) {
-			$this->logger->error("Invalid '$actionName' response format");
-			throw new IPayAgentError("Invalid '$actionName' response format");
-		}
-
-		$response_body = $response_arr['response'];
-
-		if (isset($response_body['error'])) {
-			throw new IPayAgentError($response_body['error']);
-		}
-
-		try{
-			/** @noinspection PhpUndefinedMethodInspection */
-			return $responseClass::deserialize($response_body);
-		}catch (\Exception $e){
-			throw new IPayAgentError("Invalid '$actionName' response format: ".$e->getMessage());
-		}
-
 	}
 
 }
