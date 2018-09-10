@@ -185,4 +185,75 @@ return [
 		'status' => 'string',
 	],
 
+	'P2PPaymentSender' => [
+		'card_alias' => 'string',
+	],
+
+	'P2PPaymentTarget' => [
+		'pan' => 'string',
+	],
+
+	'P2PPaymentFunds' => [
+		'invoice' => 'int',
+		'currency' => 'string',
+	],
+
+	'P2PPaymentNotification' => [
+		'kind' => 'string',
+		'adres' => 'string',
+		'text' => 'string',
+	],
+
+	'P2PActionPaymentCreate' => [
+		'user_id' => 'string',
+		'msisdn' => 'string',
+		'sender' => P2PPaymentSender::class,
+		'target' => P2PPaymentTarget::class,
+		'funds' => P2PPaymentFunds::class,
+		'notifications' => P2PPaymentNotification::class.'[]',
+	],
+
+	'P2PActionPaymentResponseInfo' => [
+		'sender_phone' => 'string',
+		'sender_card' => 'string',
+		'target_card' => 'string',
+		'invoice' => 'int',
+		'amount' => 'int',
+		'currency' => 'string',
+		'notification_cost' => 'int',
+		'notifications' => 'mixed[]',
+	],
+
+	'P2PActionPaymentResponseError' => [
+		'err_group' => 'string',
+		'err_reason' => 'string',
+	],
+
+	'P2PActionPaymentResponse' => [
+		'status' => 'int',
+		'pmt_id' => 'string',
+		'mch_id' => 'string',
+		'guid' => 'string',
+		'init_date' => 'DateTime',
+		'pay_date' => 'DateTime',
+		'info' => P2PActionPaymentResponseInfo::class,
+		'security_rate' => ['type' => 'string', 'default' => null],
+		'security_data' => ['type' => 'mixed[]', 'default' => null],
+		'error' => ['type' => P2PActionPaymentResponseError::class, 'default' => null],
+		'ident' => ['type' => 'string', 'default' => null],
+	],
+
+	'P2PActionPaymentSale' => [
+		'user_id' => 'string',
+		'msisdn' => 'string',
+		'pmt_id' => 'string',
+		'verification' => 'mixed{}',
+	],
+
+	'P2PPaymentStatusRequest' => [
+		'user_id' => 'string',
+		'msisdn' => 'string',
+		'pmt_id' => 'string',
+	],
+
 ];
