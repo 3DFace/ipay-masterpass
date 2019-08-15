@@ -33,7 +33,7 @@ class IPayGuzzleClient implements IPayHttpClient
 			]);
 			$response_json = $response->getBody()->getContents();
 		}catch (\Exception|GuzzleException $e){
-			throw new IPayHttpClientError('POST failed: '.$e->getMessage(), 0, $e);
+			throw new IPayHttpClientError('POST failed: '.\trim($e->getMessage()), 0, $e);
 		}
 
 		$status_code = $response->getStatusCode();
