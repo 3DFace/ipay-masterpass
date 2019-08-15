@@ -10,10 +10,10 @@ class StatusResponseItem implements \JsonSerializable {
 	private $type;
 	/** @var string */
 	private $msisdn;
-	/** @var ActionPaymentResponse */
+	/** @var StatusResponseItemEnvelope */
 	private $response;
 
-	public function __construct(string $type, string $msisdn, ActionPaymentResponse $response){
+	public function __construct(string $type, string $msisdn, StatusResponseItemEnvelope $response){
 		$this->type = $type;
 		$this->msisdn = $msisdn;
 		$this->response = $response;
@@ -34,9 +34,9 @@ class StatusResponseItem implements \JsonSerializable {
 	}
 
 	/**
-	 * @return ActionPaymentResponse
+	 * @return StatusResponseItemEnvelope
 	 */
-	public function getResponse() : ActionPaymentResponse {
+	public function getResponse() : StatusResponseItemEnvelope {
 		return $this->response;
 	}
 
@@ -87,7 +87,7 @@ class StatusResponseItem implements \JsonSerializable {
 		$response = $response !== null ? \call_user_func(function ($val){
 			$x = \json_decode($val, true, 512, 0);
 			try {
-				$x = $x !== null ? ActionPaymentResponse::deserialize($x) : null;
+				$x = $x !== null ? StatusResponseItemEnvelope::deserialize($x) : null;
 			}catch (\Exception $e){
 				throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 			}

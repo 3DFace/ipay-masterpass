@@ -181,7 +181,11 @@ return [
 	'StatusResponseItem' => [
 		'type' => 'string',
 		'msisdn' => 'string',
-		'response' => new JsonType(new DynamicTypeDef(new ClassName(ActionPaymentResponse::class))),
+		'response' => new JsonType(new DynamicTypeDef(new ClassName(StatusResponseItemEnvelope::class))),
+	],
+
+	'StatusResponseItemEnvelope' => [
+		'response' => ActionPaymentResponse::class,
 	],
 
 	'ActionDeleteCard' => [

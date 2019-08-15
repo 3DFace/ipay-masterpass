@@ -223,7 +223,7 @@ class IPayAgent
 	 * @param string $userId
 	 * @param string $phoneNumber
 	 * @param string $paymentId
-	 * @return ActionPaymentResponse[]|array
+	 * @return StatusResponseItem[]|array
 	 * @throws IPayAgentError
 	 */
 	public function paymentStatus(string $userId, string $phoneNumber, string $paymentId) : array
