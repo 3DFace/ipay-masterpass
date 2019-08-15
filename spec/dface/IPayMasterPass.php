@@ -181,7 +181,7 @@ return [
 	'StatusResponseItem' => [
 		'type' => 'string',
 		'msisdn' => 'string',
-		'response' => new JsonType(new DynamicTypeDef(new ClassName(StatusResponseItemEnvelope::class))),
+		'response' => new JsonType(new DynamicTypeDef(new ClassName(StatusResponseItemEnvelope::class)), 0, 0, true),
 	],
 
 	'StatusResponseItemEnvelope' => [

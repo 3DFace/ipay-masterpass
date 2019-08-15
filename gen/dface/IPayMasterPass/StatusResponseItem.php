@@ -51,10 +51,7 @@ class StatusResponseItem implements \JsonSerializable {
 
 		$result['msisdn'] = $this->msisdn;
 
-		$result['response'] = \call_user_func(function (\JsonSerializable $val){
-			$x = $val->jsonSerialize();
-			return \json_encode($x, 0);
-		}, $this->response);
+		$result['response'] = $this->response->jsonSerialize();
 
 		return $result;
 	}
