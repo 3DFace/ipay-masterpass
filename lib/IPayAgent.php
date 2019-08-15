@@ -223,14 +223,14 @@ class IPayAgent
 	 * @param string $userId
 	 * @param string $phoneNumber
 	 * @param string $paymentId
-	 * @return mixed
+	 * @return ActionPaymentResponse[]|array
 	 * @throws IPayAgentError
 	 */
-	public function paymentStatus(string $userId, string $phoneNumber, string $paymentId)
+	public function paymentStatus(string $userId, string $phoneNumber, string $paymentId) : array
 	{
 		return $this->agentClient->doRequest('StatusRequest',
 			new ActionPaymentStatusRequest($userId, $phoneNumber, $paymentId),
-			ActionPaymentResponse::class);
+			ActionPaymentResponse::class.'[]');
 	}
 
 }

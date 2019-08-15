@@ -95,6 +95,15 @@ class IPayAgentClient
 		}
 
 		try{
+			if(\substr($responseClass, -2) === '[]'){
+				$itemClass = \substr($responseClass, 0, -2);
+				$result = [];
+				foreach($response_body as $item){
+					/** @noinspection PhpUndefinedMethodInspection */
+					$result[] = $itemClass::deserialize($item);
+				}
+				return $result;
+			}
 			/** @noinspection PhpUndefinedMethodInspection */
 			return $responseClass::deserialize($response_body);
 		}catch (\Exception $e){
