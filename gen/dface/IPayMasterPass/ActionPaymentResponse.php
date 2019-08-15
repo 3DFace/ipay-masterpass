@@ -279,35 +279,35 @@ class ActionPaymentResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionPaymentResponse {
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('pmt_id', $arr)){
+		if(\array_key_exists('pmt_id', $arr)){
 			$pmt_id = $arr['pmt_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
 		$pmt_id = $pmt_id !== null ? (int)$pmt_id : null;
 
-		if(array_key_exists('invoice', $arr)){
+		if(\array_key_exists('invoice', $arr)){
 			$invoice = $arr['invoice'];
 		}else{
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
 		$invoice = $invoice !== null ? (int)$invoice : null;
 
-		if(array_key_exists('amount', $arr)){
+		if(\array_key_exists('amount', $arr)){
 			$amount = $arr['amount'];
 		}else{
 			throw new \InvalidArgumentException("Property 'amount' not specified");
 		}
 		$amount = $amount !== null ? (int)$amount : null;
 
-		if(array_key_exists('pmt_status', $arr)){
+		if(\array_key_exists('pmt_status', $arr)){
 			$pmt_status = $arr['pmt_status'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_status' not specified");
@@ -315,7 +315,7 @@ class ActionPaymentResponse implements \JsonSerializable {
 		$pmt_status = $pmt_status !== null ? (int)$pmt_status : null;
 
 		$pmt_info = [];
-		if(array_key_exists('pmt_info', $arr)){
+		if(\array_key_exists('pmt_info', $arr)){
 			$pmt_info = $arr['pmt_info'];
 		}
 		try {
@@ -324,21 +324,21 @@ class ActionPaymentResponse implements \JsonSerializable {
 			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('card_alias', $arr)){
+		if(\array_key_exists('card_alias', $arr)){
 			$card_alias = $arr['card_alias'];
 		}else{
 			throw new \InvalidArgumentException("Property 'card_alias' not specified");
 		}
 		$card_alias = $card_alias !== null ? (string)$card_alias : null;
 
-		if(array_key_exists('card_mask', $arr)){
+		if(\array_key_exists('card_mask', $arr)){
 			$card_mask = $arr['card_mask'];
 		}else{
 			throw new \InvalidArgumentException("Property 'card_mask' not specified");
 		}
 		$card_mask = $card_mask !== null ? (string)$card_mask : null;
 
-		if(array_key_exists('bank_response', $arr)){
+		if(\array_key_exists('bank_response', $arr)){
 			$bank_response = $arr['bank_response'];
 		}else{
 			throw new \InvalidArgumentException("Property 'bank_response' not specified");
@@ -350,31 +350,31 @@ class ActionPaymentResponse implements \JsonSerializable {
 		}
 
 		$secure = null;
-		if(array_key_exists('secure', $arr)){
+		if(\array_key_exists('secure', $arr)){
 			$secure = $arr['secure'];
 		}
 		$secure = $secure !== null ? (string)$secure : null;
 
 		$token = null;
-		if(array_key_exists('token', $arr)){
+		if(\array_key_exists('token', $arr)){
 			$token = $arr['token'];
 		}
 		$token = $token !== null ? (string)$token : null;
 
 		$ascUrl = null;
-		if(array_key_exists('ascUrl', $arr)){
+		if(\array_key_exists('ascUrl', $arr)){
 			$ascUrl = $arr['ascUrl'];
 		}
 		$ascUrl = $ascUrl !== null ? (string)$ascUrl : null;
 
 		$pareq = null;
-		if(array_key_exists('pareq', $arr)){
+		if(\array_key_exists('pareq', $arr)){
 			$pareq = $arr['pareq'];
 		}
 		$pareq = $pareq !== null ? (string)$pareq : null;
 
 		$md = null;
-		if(array_key_exists('md', $arr)){
+		if(\array_key_exists('md', $arr)){
 			$md = $arr['md'];
 		}
 		$md = $md !== null ? (string)$md : null;

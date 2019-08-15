@@ -105,21 +105,21 @@ class CardInfo implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : CardInfo {
-		if(array_key_exists('card_alias', $arr)){
+		if(\array_key_exists('card_alias', $arr)){
 			$card_alias = $arr['card_alias'];
 		}else{
 			throw new \InvalidArgumentException("Property 'card_alias' not specified");
 		}
 		$card_alias = $card_alias !== null ? (string)$card_alias : null;
 
-		if(array_key_exists('mask', $arr)){
+		if(\array_key_exists('mask', $arr)){
 			$mask = $arr['mask'];
 		}else{
 			throw new \InvalidArgumentException("Property 'mask' not specified");
 		}
 		$mask = $mask !== null ? (string)$mask : null;
 
-		if(array_key_exists('uid', $arr)){
+		if(\array_key_exists('uid', $arr)){
 			$uid = $arr['uid'];
 		}else{
 			throw new \InvalidArgumentException("Property 'uid' not specified");
@@ -127,21 +127,21 @@ class CardInfo implements \JsonSerializable {
 		$uid = $uid !== null ? (string)$uid : null;
 
 		$is_expired = false;
-		if(array_key_exists('is_expired', $arr)){
+		if(\array_key_exists('is_expired', $arr)){
 			$is_expired = $arr['is_expired'];
 		}
 		$is_expired = $is_expired !== null ? (bool)$is_expired : null;
 
 		$is_corporate = false;
-		if(array_key_exists('is_corporate', $arr)){
+		if(\array_key_exists('is_corporate', $arr)){
 			$is_corporate = $arr['is_corporate'];
 		}
 		$is_corporate = $is_corporate !== null ? (bool)$is_corporate : null;
 
 		$ref_no = null;
-		if(array_key_exists('ref_no', $arr)){
+		if(\array_key_exists('ref_no', $arr)){
 			$ref_no = $arr['ref_no'];
-		}elseif(array_key_exists('RefNo', $arr)){
+		}elseif(\array_key_exists('RefNo', $arr)){
 			$ref_no = $arr['RefNo'];
 		}
 		$ref_no = $ref_no !== null ? (string)$ref_no : null;

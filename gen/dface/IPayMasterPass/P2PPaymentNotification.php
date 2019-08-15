@@ -62,21 +62,21 @@ class P2PPaymentNotification implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PPaymentNotification {
-		if(array_key_exists('kind', $arr)){
+		if(\array_key_exists('kind', $arr)){
 			$kind = $arr['kind'];
 		}else{
 			throw new \InvalidArgumentException("Property 'kind' not specified");
 		}
 		$kind = $kind !== null ? (string)$kind : null;
 
-		if(array_key_exists('adres', $arr)){
+		if(\array_key_exists('adres', $arr)){
 			$adres = $arr['adres'];
 		}else{
 			throw new \InvalidArgumentException("Property 'adres' not specified");
 		}
 		$adres = $adres !== null ? (string)$adres : null;
 
-		if(array_key_exists('text', $arr)){
+		if(\array_key_exists('text', $arr)){
 			$text = $arr['text'];
 		}else{
 			throw new \InvalidArgumentException("Property 'text' not specified");

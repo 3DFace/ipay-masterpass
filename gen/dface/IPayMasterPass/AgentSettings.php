@@ -62,21 +62,21 @@ class AgentSettings implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : AgentSettings {
-		if(array_key_exists('url', $arr)){
+		if(\array_key_exists('url', $arr)){
 			$url = $arr['url'];
 		}else{
 			throw new \InvalidArgumentException("Property 'url' not specified");
 		}
 		$url = $url !== null ? (string)$url : null;
 
-		if(array_key_exists('merchant_id', $arr)){
+		if(\array_key_exists('merchant_id', $arr)){
 			$merchant_id = $arr['merchant_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'merchant_id' not specified");
 		}
 		$merchant_id = $merchant_id !== null ? (string)$merchant_id : null;
 
-		if(array_key_exists('sign_key', $arr)){
+		if(\array_key_exists('sign_key', $arr)){
 			$sign_key = $arr['sign_key'];
 		}else{
 			throw new \InvalidArgumentException("Property 'sign_key' not specified");

@@ -79,27 +79,27 @@ class ActionInitWidgetSession implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionInitWidgetSession {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('pmt_info', $arr)){
+		if(\array_key_exists('pmt_info', $arr)){
 			$pmt_info = $arr['pmt_info'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_info' not specified");
 		}
 		
-		if(array_key_exists('pmt_desc', $arr)){
+		if(\array_key_exists('pmt_desc', $arr)){
 			$pmt_desc = $arr['pmt_desc'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_desc' not specified");

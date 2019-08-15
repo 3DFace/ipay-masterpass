@@ -120,7 +120,7 @@ class P2PActionPaymentResponseInfo implements \JsonSerializable {
 
 		$result['notification_cost'] = $this->notification_cost;
 
-		$result['notifications'] = array_map(function ( $x){
+		$result['notifications'] = \array_map(function ( $x){
 			return $x;
 		}, $this->notifications);
 
@@ -133,61 +133,61 @@ class P2PActionPaymentResponseInfo implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PActionPaymentResponseInfo {
-		if(array_key_exists('sender_phone', $arr)){
+		if(\array_key_exists('sender_phone', $arr)){
 			$sender_phone = $arr['sender_phone'];
 		}else{
 			throw new \InvalidArgumentException("Property 'sender_phone' not specified");
 		}
 		$sender_phone = $sender_phone !== null ? (string)$sender_phone : null;
 
-		if(array_key_exists('sender_card', $arr)){
+		if(\array_key_exists('sender_card', $arr)){
 			$sender_card = $arr['sender_card'];
 		}else{
 			throw new \InvalidArgumentException("Property 'sender_card' not specified");
 		}
 		$sender_card = $sender_card !== null ? (string)$sender_card : null;
 
-		if(array_key_exists('target_card', $arr)){
+		if(\array_key_exists('target_card', $arr)){
 			$target_card = $arr['target_card'];
 		}else{
 			throw new \InvalidArgumentException("Property 'target_card' not specified");
 		}
 		$target_card = $target_card !== null ? (string)$target_card : null;
 
-		if(array_key_exists('invoice', $arr)){
+		if(\array_key_exists('invoice', $arr)){
 			$invoice = $arr['invoice'];
 		}else{
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
 		$invoice = $invoice !== null ? (int)$invoice : null;
 
-		if(array_key_exists('amount', $arr)){
+		if(\array_key_exists('amount', $arr)){
 			$amount = $arr['amount'];
 		}else{
 			throw new \InvalidArgumentException("Property 'amount' not specified");
 		}
 		$amount = $amount !== null ? (int)$amount : null;
 
-		if(array_key_exists('currency', $arr)){
+		if(\array_key_exists('currency', $arr)){
 			$currency = $arr['currency'];
 		}else{
 			throw new \InvalidArgumentException("Property 'currency' not specified");
 		}
 		$currency = $currency !== null ? (string)$currency : null;
 
-		if(array_key_exists('notification_cost', $arr)){
+		if(\array_key_exists('notification_cost', $arr)){
 			$notification_cost = $arr['notification_cost'];
 		}else{
 			throw new \InvalidArgumentException("Property 'notification_cost' not specified");
 		}
 		$notification_cost = $notification_cost !== null ? (int)$notification_cost : null;
 
-		if(array_key_exists('notifications', $arr)){
+		if(\array_key_exists('notifications', $arr)){
 			$notifications = $arr['notifications'];
 		}else{
 			throw new \InvalidArgumentException("Property 'notifications' not specified");
 		}
-		$notifications = $notifications !== null ? array_map(function ($x){
+		$notifications = $notifications !== null ? \array_map(function ($x){
 						return $x;
 		}, $notifications) : null;
 

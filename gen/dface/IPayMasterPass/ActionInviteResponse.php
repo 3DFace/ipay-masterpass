@@ -50,14 +50,14 @@ class ActionInviteResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionInviteResponse {
-		if(array_key_exists('verify', $arr)){
+		if(\array_key_exists('verify', $arr)){
 			$verify = $arr['verify'];
 		}else{
 			throw new \InvalidArgumentException("Property 'verify' not specified");
 		}
 		$verify = $verify !== null ? (string)$verify : null;
 
-		if(array_key_exists('token', $arr)){
+		if(\array_key_exists('token', $arr)){
 			$token = $arr['token'];
 		}else{
 			throw new \InvalidArgumentException("Property 'token' not specified");

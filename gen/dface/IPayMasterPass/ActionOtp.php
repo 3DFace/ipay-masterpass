@@ -79,28 +79,28 @@ class ActionOtp implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionOtp {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('token', $arr)){
+		if(\array_key_exists('token', $arr)){
 			$token = $arr['token'];
 		}else{
 			throw new \InvalidArgumentException("Property 'token' not specified");
 		}
 		$token = $token !== null ? (string)$token : null;
 
-		if(array_key_exists('value', $arr)){
+		if(\array_key_exists('value', $arr)){
 			$value = $arr['value'];
 		}else{
 			throw new \InvalidArgumentException("Property 'value' not specified");

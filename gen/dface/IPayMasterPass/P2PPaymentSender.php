@@ -38,7 +38,7 @@ class P2PPaymentSender implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PPaymentSender {
-		if(array_key_exists('card_alias', $arr)){
+		if(\array_key_exists('card_alias', $arr)){
 			$card_alias = $arr['card_alias'];
 		}else{
 			throw new \InvalidArgumentException("Property 'card_alias' not specified");

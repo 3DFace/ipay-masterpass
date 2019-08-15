@@ -86,28 +86,28 @@ class P2PActionPaymentSale implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PActionPaymentSale {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('pmt_id', $arr)){
+		if(\array_key_exists('pmt_id', $arr)){
 			$pmt_id = $arr['pmt_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
 		$pmt_id = $pmt_id !== null ? (string)$pmt_id : null;
 
-		if(array_key_exists('verification', $arr)){
+		if(\array_key_exists('verification', $arr)){
 			$verification = $arr['verification'];
 		}else{
 			throw new \InvalidArgumentException("Property 'verification' not specified");

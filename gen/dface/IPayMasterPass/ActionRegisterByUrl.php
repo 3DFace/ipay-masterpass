@@ -92,35 +92,35 @@ class ActionRegisterByUrl implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionRegisterByUrl {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('lang', $arr)){
+		if(\array_key_exists('lang', $arr)){
 			$lang = $arr['lang'];
 		}else{
 			throw new \InvalidArgumentException("Property 'lang' not specified");
 		}
 		$lang = $lang !== null ? (string)$lang : null;
 
-		if(array_key_exists('success_url', $arr)){
+		if(\array_key_exists('success_url', $arr)){
 			$success_url = $arr['success_url'];
 		}else{
 			throw new \InvalidArgumentException("Property 'success_url' not specified");
 		}
 		$success_url = $success_url !== null ? (string)$success_url : null;
 
-		if(array_key_exists('error_url', $arr)){
+		if(\array_key_exists('error_url', $arr)){
 			$error_url = $arr['error_url'];
 		}else{
 			throw new \InvalidArgumentException("Property 'error_url' not specified");

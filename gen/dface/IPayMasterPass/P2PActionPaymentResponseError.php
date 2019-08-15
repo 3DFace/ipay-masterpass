@@ -50,14 +50,14 @@ class P2PActionPaymentResponseError implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PActionPaymentResponseError {
-		if(array_key_exists('err_group', $arr)){
+		if(\array_key_exists('err_group', $arr)){
 			$err_group = $arr['err_group'];
 		}else{
 			throw new \InvalidArgumentException("Property 'err_group' not specified");
 		}
 		$err_group = $err_group !== null ? (string)$err_group : null;
 
-		if(array_key_exists('err_reason', $arr)){
+		if(\array_key_exists('err_reason', $arr)){
 			$err_reason = $arr['err_reason'];
 		}else{
 			throw new \InvalidArgumentException("Property 'err_reason' not specified");

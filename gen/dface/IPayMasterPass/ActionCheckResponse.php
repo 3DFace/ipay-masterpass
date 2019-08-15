@@ -38,7 +38,7 @@ class ActionCheckResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionCheckResponse {
-		if(array_key_exists('user_status', $arr)){
+		if(\array_key_exists('user_status', $arr)){
 			$user_status = $arr['user_status'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_status' not specified");

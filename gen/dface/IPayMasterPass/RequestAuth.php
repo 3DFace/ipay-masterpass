@@ -64,14 +64,14 @@ class RequestAuth implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : RequestAuth {
-		if(array_key_exists('login', $arr)){
+		if(\array_key_exists('login', $arr)){
 			$login = $arr['login'];
 		}else{
 			throw new \InvalidArgumentException("Property 'login' not specified");
 		}
 		$login = $login !== null ? (string)$login : null;
 
-		if(array_key_exists('time', $arr)){
+		if(\array_key_exists('time', $arr)){
 			$time = $arr['time'];
 		}else{
 			throw new \InvalidArgumentException("Property 'time' not specified");
@@ -82,7 +82,7 @@ class RequestAuth implements \JsonSerializable {
 			throw new \InvalidArgumentException($e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('sign', $arr)){
+		if(\array_key_exists('sign', $arr)){
 			$sign = $arr['sign'];
 		}else{
 			throw new \InvalidArgumentException("Property 'sign' not specified");

@@ -63,19 +63,19 @@ class BankResponse implements \JsonSerializable {
 	 */
 	public static function deserialize(array $arr) : BankResponse {
 		$bank_id = null;
-		if(array_key_exists('bank_id', $arr)){
+		if(\array_key_exists('bank_id', $arr)){
 			$bank_id = $arr['bank_id'];
 		}
 		$bank_id = $bank_id !== null ? (string)$bank_id : null;
 
 		$rc = null;
-		if(array_key_exists('rc', $arr)){
+		if(\array_key_exists('rc', $arr)){
 			$rc = $arr['rc'];
 		}
 		$rc = $rc !== null ? (string)$rc : null;
 
 		$action = null;
-		if(array_key_exists('action', $arr)){
+		if(\array_key_exists('action', $arr)){
 			$action = $arr['action'];
 		}
 		$action = $action !== null ? (string)$action : null;

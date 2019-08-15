@@ -94,7 +94,7 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 
 		$result['funds'] = $this->funds->jsonSerialize();
 
-		$result['notifications'] = array_map(function (P2PPaymentNotification $x){
+		$result['notifications'] = \array_map(function (P2PPaymentNotification $x){
 			return $x->jsonSerialize();
 		}, $this->notifications);
 
@@ -107,21 +107,21 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PActionPaymentCreate {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('sender', $arr)){
+		if(\array_key_exists('sender', $arr)){
 			$sender = $arr['sender'];
 		}else{
 			throw new \InvalidArgumentException("Property 'sender' not specified");
@@ -132,7 +132,7 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('target', $arr)){
+		if(\array_key_exists('target', $arr)){
 			$target = $arr['target'];
 		}else{
 			throw new \InvalidArgumentException("Property 'target' not specified");
@@ -143,7 +143,7 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('funds', $arr)){
+		if(\array_key_exists('funds', $arr)){
 			$funds = $arr['funds'];
 		}else{
 			throw new \InvalidArgumentException("Property 'funds' not specified");
@@ -154,12 +154,12 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('notifications', $arr)){
+		if(\array_key_exists('notifications', $arr)){
 			$notifications = $arr['notifications'];
 		}else{
 			throw new \InvalidArgumentException("Property 'notifications' not specified");
 		}
-		$notifications = $notifications !== null ? array_map(function ($x){
+		$notifications = $notifications !== null ? \array_map(function ($x){
 			try {
 				$x = $x !== null ? P2PPaymentNotification::deserialize($x) : null;
 			}catch (\Exception $e){

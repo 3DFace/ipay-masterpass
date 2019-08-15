@@ -50,14 +50,14 @@ class P2PPaymentFunds implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PPaymentFunds {
-		if(array_key_exists('invoice', $arr)){
+		if(\array_key_exists('invoice', $arr)){
 			$invoice = $arr['invoice'];
 		}else{
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
 		$invoice = $invoice !== null ? (int)$invoice : null;
 
-		if(array_key_exists('currency', $arr)){
+		if(\array_key_exists('currency', $arr)){
 			$currency = $arr['currency'];
 		}else{
 			throw new \InvalidArgumentException("Property 'currency' not specified");

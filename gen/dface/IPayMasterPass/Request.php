@@ -62,7 +62,7 @@ class Request implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : Request {
-		if(array_key_exists('auth', $arr)){
+		if(\array_key_exists('auth', $arr)){
 			$auth = $arr['auth'];
 		}else{
 			throw new \InvalidArgumentException("Property 'auth' not specified");
@@ -73,14 +73,14 @@ class Request implements \JsonSerializable {
 			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('action', $arr)){
+		if(\array_key_exists('action', $arr)){
 			$action = $arr['action'];
 		}else{
 			throw new \InvalidArgumentException("Property 'action' not specified");
 		}
 		$action = $action !== null ? (string)$action : null;
 
-		if(array_key_exists('body', $arr)){
+		if(\array_key_exists('body', $arr)){
 			$body = $arr['body'];
 		}else{
 			throw new \InvalidArgumentException("Property 'body' not specified");

@@ -51,13 +51,13 @@ class ActionPmtInfo implements \JsonSerializable {
 	 */
 	public static function deserialize(array $arr) : ActionPmtInfo {
 		$acc = null;
-		if(array_key_exists('acc', $arr)){
+		if(\array_key_exists('acc', $arr)){
 			$acc = $arr['acc'];
 		}
 		$acc = $acc !== null ? (string)$acc : null;
 
 		$invoice = null;
-		if(array_key_exists('invoice', $arr)){
+		if(\array_key_exists('invoice', $arr)){
 			$invoice = $arr['invoice'];
 		}
 		$invoice = $invoice !== null ? (int)$invoice : null;

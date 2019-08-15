@@ -118,42 +118,42 @@ class ActionPaymentCreate implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionPaymentCreate {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('guid', $arr)){
+		if(\array_key_exists('guid', $arr)){
 			$guid = $arr['guid'];
 		}else{
 			throw new \InvalidArgumentException("Property 'guid' not specified");
 		}
 		$guid = $guid !== null ? (string)$guid : null;
 
-		if(array_key_exists('invoice', $arr)){
+		if(\array_key_exists('invoice', $arr)){
 			$invoice = $arr['invoice'];
 		}else{
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
 		$invoice = $invoice !== null ? (int)$invoice : null;
 
-		if(array_key_exists('card_alias', $arr)){
+		if(\array_key_exists('card_alias', $arr)){
 			$card_alias = $arr['card_alias'];
 		}else{
 			throw new \InvalidArgumentException("Property 'card_alias' not specified");
 		}
 		$card_alias = $card_alias !== null ? (string)$card_alias : null;
 
-		if(array_key_exists('pmt_info', $arr)){
+		if(\array_key_exists('pmt_info', $arr)){
 			$pmt_info = $arr['pmt_info'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_info' not specified");
@@ -164,7 +164,7 @@ class ActionPaymentCreate implements \JsonSerializable {
 			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('pmt_desc', $arr)){
+		if(\array_key_exists('pmt_desc', $arr)){
 			$pmt_desc = $arr['pmt_desc'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_desc' not specified");

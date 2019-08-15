@@ -38,7 +38,7 @@ class ActionDeleteCardResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionDeleteCardResponse {
-		if(array_key_exists('status', $arr)){
+		if(\array_key_exists('status', $arr)){
 			$status = $arr['status'];
 		}else{
 			throw new \InvalidArgumentException("Property 'status' not specified");

@@ -38,7 +38,7 @@ class ActionInitWidgetSessionResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionInitWidgetSessionResponse {
-		if(array_key_exists('session', $arr)){
+		if(\array_key_exists('session', $arr)){
 			$session = $arr['session'];
 		}else{
 			throw new \InvalidArgumentException("Property 'session' not specified");

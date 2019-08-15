@@ -157,7 +157,7 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 
 		$result['security_rate'] = $this->security_rate;
 
-		$result['security_data'] = $this->security_data === null ? null : array_map(function ( $x){
+		$result['security_data'] = $this->security_data === null ? null : \array_map(function ( $x){
 			return $x;
 		}, $this->security_data);
 
@@ -174,35 +174,35 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PActionPaymentResponse {
-		if(array_key_exists('status', $arr)){
+		if(\array_key_exists('status', $arr)){
 			$status = $arr['status'];
 		}else{
 			throw new \InvalidArgumentException("Property 'status' not specified");
 		}
 		$status = $status !== null ? (int)$status : null;
 
-		if(array_key_exists('pmt_id', $arr)){
+		if(\array_key_exists('pmt_id', $arr)){
 			$pmt_id = $arr['pmt_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
 		$pmt_id = $pmt_id !== null ? (string)$pmt_id : null;
 
-		if(array_key_exists('mch_id', $arr)){
+		if(\array_key_exists('mch_id', $arr)){
 			$mch_id = $arr['mch_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'mch_id' not specified");
 		}
 		$mch_id = $mch_id !== null ? (string)$mch_id : null;
 
-		if(array_key_exists('guid', $arr)){
+		if(\array_key_exists('guid', $arr)){
 			$guid = $arr['guid'];
 		}else{
 			throw new \InvalidArgumentException("Property 'guid' not specified");
 		}
 		$guid = $guid !== null ? (string)$guid : null;
 
-		if(array_key_exists('init_date', $arr)){
+		if(\array_key_exists('init_date', $arr)){
 			$init_date = $arr['init_date'];
 		}else{
 			throw new \InvalidArgumentException("Property 'init_date' not specified");
@@ -213,7 +213,7 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 			throw new \InvalidArgumentException($e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('pay_date', $arr)){
+		if(\array_key_exists('pay_date', $arr)){
 			$pay_date = $arr['pay_date'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pay_date' not specified");
@@ -224,7 +224,7 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 			throw new \InvalidArgumentException($e->getMessage(), 0, $e);
 		}
 
-		if(array_key_exists('info', $arr)){
+		if(\array_key_exists('info', $arr)){
 			$info = $arr['info'];
 		}else{
 			throw new \InvalidArgumentException("Property 'info' not specified");
@@ -236,21 +236,21 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 		}
 
 		$security_rate = null;
-		if(array_key_exists('security_rate', $arr)){
+		if(\array_key_exists('security_rate', $arr)){
 			$security_rate = $arr['security_rate'];
 		}
 		$security_rate = $security_rate !== null ? (string)$security_rate : null;
 
 		$security_data = null;
-		if(array_key_exists('security_data', $arr)){
+		if(\array_key_exists('security_data', $arr)){
 			$security_data = $arr['security_data'];
 		}
-		$security_data = $security_data !== null ? array_map(function ($x){
+		$security_data = $security_data !== null ? \array_map(function ($x){
 						return $x;
 		}, $security_data) : null;
 
 		$error = null;
-		if(array_key_exists('error', $arr)){
+		if(\array_key_exists('error', $arr)){
 			$error = $arr['error'];
 		}
 		try {
@@ -260,7 +260,7 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 		}
 
 		$ident = null;
-		if(array_key_exists('ident', $arr)){
+		if(\array_key_exists('ident', $arr)){
 			$ident = $arr['ident'];
 		}
 		$ident = $ident !== null ? (string)$ident : null;

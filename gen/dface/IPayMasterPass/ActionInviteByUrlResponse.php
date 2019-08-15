@@ -38,7 +38,7 @@ class ActionInviteByUrlResponse implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionInviteByUrlResponse {
-		if(array_key_exists('url', $arr)){
+		if(\array_key_exists('url', $arr)){
 			$url = $arr['url'];
 		}else{
 			throw new \InvalidArgumentException("Property 'url' not specified");

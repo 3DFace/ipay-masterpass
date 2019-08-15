@@ -38,7 +38,7 @@ class P2PPaymentTarget implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : P2PPaymentTarget {
-		if(array_key_exists('pan', $arr)){
+		if(\array_key_exists('pan', $arr)){
 			$pan = $arr['pan'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pan' not specified");

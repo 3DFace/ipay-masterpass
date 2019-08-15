@@ -92,35 +92,35 @@ class ActionPaymentSale implements \JsonSerializable {
 	 * @throws \InvalidArgumentException
 	 */
 	public static function deserialize(array $arr) : ActionPaymentSale {
-		if(array_key_exists('user_id', $arr)){
+		if(\array_key_exists('user_id', $arr)){
 			$user_id = $arr['user_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
 		$user_id = $user_id !== null ? (string)$user_id : null;
 
-		if(array_key_exists('msisdn', $arr)){
+		if(\array_key_exists('msisdn', $arr)){
 			$msisdn = $arr['msisdn'];
 		}else{
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
 		$msisdn = $msisdn !== null ? (string)$msisdn : null;
 
-		if(array_key_exists('pmt_id', $arr)){
+		if(\array_key_exists('pmt_id', $arr)){
 			$pmt_id = $arr['pmt_id'];
 		}else{
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
 		$pmt_id = $pmt_id !== null ? (int)$pmt_id : null;
 
-		if(array_key_exists('invoice', $arr)){
+		if(\array_key_exists('invoice', $arr)){
 			$invoice = $arr['invoice'];
 		}else{
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
 		$invoice = $invoice !== null ? (int)$invoice : null;
 
-		if(array_key_exists('guid', $arr)){
+		if(\array_key_exists('guid', $arr)){
 			$guid = $arr['guid'];
 		}else{
 			throw new \InvalidArgumentException("Property 'guid' not specified");
