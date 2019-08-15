@@ -230,7 +230,7 @@ class IPayAgent
 	{
 		return $this->agentClient->doRequest('StatusRequest',
 			new ActionPaymentStatusRequest($userId, $phoneNumber, $paymentId),
-			ActionPaymentResponse::class.'[]');
+			StatusResponseItem::class.'[]');
 	}
 
 }

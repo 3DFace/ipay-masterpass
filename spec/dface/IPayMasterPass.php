@@ -2,7 +2,10 @@
 
 namespace dface\IPayMasterPass;
 
+use dface\CodeGen\ClassName;
 use dface\CodeGen\DateTimeType;
+use dface\CodeGen\DynamicTypeDef;
+use dface\CodeGen\JsonType;
 
 return [
 
@@ -173,6 +176,12 @@ return [
 		'user_id' => 'string',
 		'msisdn' => 'string',
 		'guid' => 'string',
+	],
+
+	'StatusResponseItem' => [
+		'type' => 'string',
+		'msisdn' => 'string',
+		'response' => new JsonType(new DynamicTypeDef(new ClassName(ActionPaymentResponse::class))),
 	],
 
 	'ActionDeleteCard' => [
