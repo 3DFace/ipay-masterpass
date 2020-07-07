@@ -23,7 +23,7 @@ class ActionListResponse implements \JsonSerializable
 	 */
 	public function jsonSerialize()
 	{
-		return array_map(function (CardInfo $view) {
+		return \array_map(static function (CardInfo $view) {
 			return $view->jsonSerialize();
 		}, $this->cards);
 	}
@@ -43,7 +43,7 @@ class ActionListResponse implements \JsonSerializable
 	 */
 	public static function deserialize(array $list) : ActionListResponse
 	{
-		$cards = array_map(function (array $arr) {
+		$cards = \array_map(static function (array $arr) {
 			return CardInfo::deserialize($arr);
 		}, $list);
 		return new self($cards);
