@@ -4,7 +4,6 @@
 namespace dface\IPayMasterPass;
 
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Log\LoggerInterface;
 
@@ -29,7 +28,7 @@ class IPayAgentClient
 	public function __construct(
 		AgentSettings $settings,
 		ClientInterface $client,
-		RequestFactoryInterface $requestFactory,
+		ServerRequestFactoryInterface $requestFactory,
 		callable $stringStreamFactory,
 		LoggerInterface $logger,
 		IPayTimeService $timeService,
@@ -86,7 +85,7 @@ class IPayAgentClient
 			throw new IPayAgentError("'$actionName' failed: ".$e->getMessage()."\n");
 		}
 
-		$response_arr = json_decode($response_json, true);
+		$response_arr = \json_decode($response_json, true);
 		if ($response_arr === null) {
 			$this->logger->error("Invalid '$actionName' response format");
 			throw new IPayAgentError("Invalid '$actionName' response format");
