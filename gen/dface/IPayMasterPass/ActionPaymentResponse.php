@@ -4,37 +4,42 @@
 
 namespace dface\IPayMasterPass;
 
-class ActionPaymentResponse implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $msisdn;
-	/** @var int */
-	private $pmt_id;
-	/** @var int */
-	private $invoice;
-	/** @var int */
-	private $amount;
-	/** @var int */
-	private $pmt_status;
-	/** @var ActionPmtInfo */
-	private $pmt_info;
-	/** @var string */
-	private $card_alias;
-	/** @var string */
-	private $card_mask;
-	/** @var BankResponse */
-	private $bank_response;
-	/** @var string */
-	private $secure;
-	/** @var string */
-	private $token;
-	/** @var string */
-	private $ascUrl;
-	/** @var string */
-	private $pareq;
-	/** @var string */
-	private $md;
+final class ActionPaymentResponse implements JsonSerializable {
 
+	private string $msisdn;
+	private int $pmt_id;
+	private int $invoice;
+	private int $amount;
+	private int $pmt_status;
+	private ActionPmtInfo $pmt_info;
+	private string $card_alias;
+	private string $card_mask;
+	private BankResponse $bank_response;
+	private ?string $secure;
+	private ?string $token;
+	private ?string $ascUrl;
+	private ?string $pareq;
+	private ?string $md;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $msisdn
+	 * @param int $pmt_id
+	 * @param int $invoice
+	 * @param int $amount
+	 * @param int $pmt_status
+	 * @param ActionPmtInfo $pmt_info
+	 * @param string $card_alias
+	 * @param string $card_mask
+	 * @param BankResponse $bank_response
+	 * @param string|null $secure
+	 * @param string|null $token
+	 * @param string|null $ascUrl
+	 * @param string|null $pareq
+	 * @param string|null $md
+	 */
 	public function __construct(
 		string $msisdn,
 		int $pmt_id,
@@ -45,12 +50,12 @@ class ActionPaymentResponse implements \JsonSerializable {
 		string $card_alias,
 		string $card_mask,
 		BankResponse $bank_response,
-		$secure = null,
-		$token = null,
-		$ascUrl = null,
-		$pareq = null,
-		$md = null
-	){
+		?string $secure = null,
+		?string $token = null,
+		?string $ascUrl = null,
+		?string $pareq = null,
+		?string $md = null
+	) {
 		$this->msisdn = $msisdn;
 		$this->pmt_id = $pmt_id;
 		$this->invoice = $invoice;
@@ -131,35 +136,35 @@ class ActionPaymentResponse implements \JsonSerializable {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getSecure() : ?string {
 		return $this->secure;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getToken() : ?string {
 		return $this->token;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getAscUrl() : ?string {
 		return $this->ascUrl;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getPareq() : ?string {
 		return $this->pareq;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getMd() : ?string {
 		return $this->md;
@@ -170,8 +175,12 @@ class ActionPaymentResponse implements \JsonSerializable {
 	 * @return self
 	 */
 	public function withPmtStatus(int $val) : self {
+		if ($this->pmt_status === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->pmt_status = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
@@ -180,65 +189,89 @@ class ActionPaymentResponse implements \JsonSerializable {
 	 * @return self
 	 */
 	public function withBankResponse(BankResponse $val) : self {
+		if ($this->bank_response === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->bank_response = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
 	/**
-	 * @param string $val
+	 * @param string|null $val
 	 * @return self
 	 */
 	public function withSecure(?string $val) : self {
+		if ($this->secure === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->secure = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
 	/**
-	 * @param string $val
+	 * @param string|null $val
 	 * @return self
 	 */
 	public function withToken(?string $val) : self {
+		if ($this->token === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->token = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
 	/**
-	 * @param string $val
+	 * @param string|null $val
 	 * @return self
 	 */
 	public function withAscUrl(?string $val) : self {
+		if ($this->ascUrl === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->ascUrl = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
 	/**
-	 * @param string $val
+	 * @param string|null $val
 	 * @return self
 	 */
 	public function withPareq(?string $val) : self {
+		if ($this->pareq === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->pareq = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
 	/**
-	 * @param string $val
+	 * @param string|null $val
 	 * @return self
 	 */
 	public function withMd(?string $val) : self {
+		if ($this->md === $val) {
+			return $this;
+		}
 		$clone = clone $this;
 		$clone->md = $val;
+		$clone->_dirty = true;
 		return $clone;
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -270,116 +303,161 @@ class ActionPaymentResponse implements \JsonSerializable {
 
 		$result['md'] = $this->md;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : ActionPaymentResponse {
-		if(\array_key_exists('msisdn', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('msisdn', $arr)) {
 			$msisdn = $arr['msisdn'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
-		$msisdn = $msisdn !== null ? (string)$msisdn : null;
+		$msisdn = $msisdn === null ? null : (string)$msisdn;
 
-		if(\array_key_exists('pmt_id', $arr)){
+		if (\array_key_exists('pmt_id', $arr)) {
 			$pmt_id = $arr['pmt_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
-		$pmt_id = $pmt_id !== null ? (int)$pmt_id : null;
+		$pmt_id = $pmt_id === null ? null : (int)$pmt_id;
 
-		if(\array_key_exists('invoice', $arr)){
+		if (\array_key_exists('invoice', $arr)) {
 			$invoice = $arr['invoice'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
-		$invoice = $invoice !== null ? (int)$invoice : null;
+		$invoice = $invoice === null ? null : (int)$invoice;
 
-		if(\array_key_exists('amount', $arr)){
+		if (\array_key_exists('amount', $arr)) {
 			$amount = $arr['amount'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'amount' not specified");
 		}
-		$amount = $amount !== null ? (int)$amount : null;
+		$amount = $amount === null ? null : (int)$amount;
 
-		if(\array_key_exists('pmt_status', $arr)){
+		if (\array_key_exists('pmt_status', $arr)) {
 			$pmt_status = $arr['pmt_status'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'pmt_status' not specified");
 		}
-		$pmt_status = $pmt_status !== null ? (int)$pmt_status : null;
+		$pmt_status = $pmt_status === null ? null : (int)$pmt_status;
 
 		$pmt_info = [];
-		if(\array_key_exists('pmt_info', $arr)){
+		if (\array_key_exists('pmt_info', $arr)) {
 			$pmt_info = $arr['pmt_info'];
 		}
-		try {
-			$pmt_info = $pmt_info !== null ? ActionPmtInfo::deserialize($pmt_info) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$pmt_info = $pmt_info === null ? null : ActionPmtInfo::deserialize($pmt_info);
 
-		if(\array_key_exists('card_alias', $arr)){
+		if (\array_key_exists('card_alias', $arr)) {
 			$card_alias = $arr['card_alias'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'card_alias' not specified");
 		}
-		$card_alias = $card_alias !== null ? (string)$card_alias : null;
+		$card_alias = $card_alias === null ? null : (string)$card_alias;
 
-		if(\array_key_exists('card_mask', $arr)){
+		if (\array_key_exists('card_mask', $arr)) {
 			$card_mask = $arr['card_mask'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'card_mask' not specified");
 		}
-		$card_mask = $card_mask !== null ? (string)$card_mask : null;
+		$card_mask = $card_mask === null ? null : (string)$card_mask;
 
-		if(\array_key_exists('bank_response', $arr)){
+		if (\array_key_exists('bank_response', $arr)) {
 			$bank_response = $arr['bank_response'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'bank_response' not specified");
 		}
-		try {
-			$bank_response = $bank_response !== null ? BankResponse::deserialize($bank_response) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$bank_response = $bank_response === null ? null : BankResponse::deserialize($bank_response);
 
-		$secure = null;
-		if(\array_key_exists('secure', $arr)){
-			$secure = $arr['secure'];
-		}
-		$secure = $secure !== null ? (string)$secure : null;
+		$secure = $arr['secure'] ?? null;
+		$secure = $secure === null ? null : (string)$secure;
 
-		$token = null;
-		if(\array_key_exists('token', $arr)){
-			$token = $arr['token'];
-		}
-		$token = $token !== null ? (string)$token : null;
+		$token = $arr['token'] ?? null;
+		$token = $token === null ? null : (string)$token;
 
-		$ascUrl = null;
-		if(\array_key_exists('ascUrl', $arr)){
-			$ascUrl = $arr['ascUrl'];
-		}
-		$ascUrl = $ascUrl !== null ? (string)$ascUrl : null;
+		$ascUrl = $arr['ascUrl'] ?? null;
+		$ascUrl = $ascUrl === null ? null : (string)$ascUrl;
 
-		$pareq = null;
-		if(\array_key_exists('pareq', $arr)){
-			$pareq = $arr['pareq'];
-		}
-		$pareq = $pareq !== null ? (string)$pareq : null;
+		$pareq = $arr['pareq'] ?? null;
+		$pareq = $pareq === null ? null : (string)$pareq;
 
-		$md = null;
-		if(\array_key_exists('md', $arr)){
-			$md = $arr['md'];
-		}
-		$md = $md !== null ? (string)$md : null;
+		$md = $arr['md'] ?? null;
+		$md = $md === null ? null : (string)$md;
 
-		return new static($msisdn, $pmt_id, $invoice, $amount, $pmt_status, $pmt_info, $card_alias, $card_mask, $bank_response, $secure, $token, $ascUrl, $pareq, $md);
+		return new self(
+			$msisdn,
+			$pmt_id,
+			$invoice,
+			$amount,
+			$pmt_status,
+			$pmt_info,
+			$card_alias,
+			$card_mask,
+			$bank_response,
+			$secure,
+			$token,
+			$ascUrl,
+			$pareq,
+			$md);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->msisdn === $x->msisdn
+
+			&& $this->pmt_id === $x->pmt_id
+
+			&& $this->invoice === $x->invoice
+
+			&& $this->amount === $x->amount
+
+			&& $this->pmt_status === $x->pmt_status
+
+			&& $this->pmt_info->equals($x->pmt_info)
+
+			&& $this->card_alias === $x->card_alias
+
+			&& $this->card_mask === $x->card_mask
+
+			&& $this->bank_response->equals($x->bank_response)
+
+			&& $this->secure === $x->secure
+
+			&& $this->token === $x->token
+
+			&& $this->ascUrl === $x->ascUrl
+
+			&& $this->pareq === $x->pareq
+
+			&& $this->md === $x->md;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

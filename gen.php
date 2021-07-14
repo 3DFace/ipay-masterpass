@@ -22,8 +22,8 @@ $predefinedTypes = [
 	'TimeStamp' => new TimeStampType(),
 ];
 
-$specSrc = new PhpFilesSpecSource('\\', __DIR__.'/spec');
+$specSrc = new PhpFilesSpecSource($predefinedTypes, '\\', __DIR__.'/spec');
 $writer = new Psr0ClassWriter(__DIR__.'/gen');
-$gen = new DTOGenerator($specSrc, $writer, $predefinedTypes, '7.1');
+$gen = new DTOGenerator($specSrc, $writer);
 
 $gen->generate();

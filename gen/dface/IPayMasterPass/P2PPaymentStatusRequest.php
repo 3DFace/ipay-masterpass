@@ -4,16 +4,21 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PPaymentStatusRequest implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $user_id;
-	/** @var string */
-	private $msisdn;
-	/** @var string */
-	private $pmt_id;
+final class P2PPaymentStatusRequest implements JsonSerializable {
 
-	public function __construct(string $user_id, string $msisdn, string $pmt_id){
+	private string $user_id;
+	private string $msisdn;
+	private string $pmt_id;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $user_id
+	 * @param string $msisdn
+	 * @param string $pmt_id
+	 */
+	public function __construct(string $user_id, string $msisdn, string $pmt_id) {
 		$this->user_id = $user_id;
 		$this->msisdn = $msisdn;
 		$this->pmt_id = $pmt_id;
@@ -41,9 +46,9 @@ class P2PPaymentStatusRequest implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -53,37 +58,69 @@ class P2PPaymentStatusRequest implements \JsonSerializable {
 
 		$result['pmt_id'] = $this->pmt_id;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PPaymentStatusRequest {
-		if(\array_key_exists('user_id', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('user_id', $arr)) {
 			$user_id = $arr['user_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
-		$user_id = $user_id !== null ? (string)$user_id : null;
+		$user_id = $user_id === null ? null : (string)$user_id;
 
-		if(\array_key_exists('msisdn', $arr)){
+		if (\array_key_exists('msisdn', $arr)) {
 			$msisdn = $arr['msisdn'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
-		$msisdn = $msisdn !== null ? (string)$msisdn : null;
+		$msisdn = $msisdn === null ? null : (string)$msisdn;
 
-		if(\array_key_exists('pmt_id', $arr)){
+		if (\array_key_exists('pmt_id', $arr)) {
 			$pmt_id = $arr['pmt_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
-		$pmt_id = $pmt_id !== null ? (string)$pmt_id : null;
+		$pmt_id = $pmt_id === null ? null : (string)$pmt_id;
 
-		return new static($user_id, $msisdn, $pmt_id);
+		return new self($user_id, $msisdn, $pmt_id);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->user_id === $x->user_id
+
+			&& $this->msisdn === $x->msisdn
+
+			&& $this->pmt_id === $x->pmt_id;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

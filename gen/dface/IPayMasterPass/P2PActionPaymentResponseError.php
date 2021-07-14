@@ -4,14 +4,19 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PActionPaymentResponseError implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $err_group;
-	/** @var string */
-	private $err_reason;
+final class P2PActionPaymentResponseError implements JsonSerializable {
 
-	public function __construct(string $err_group, string $err_reason){
+	private string $err_group;
+	private string $err_reason;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $err_group
+	 * @param string $err_reason
+	 */
+	public function __construct(string $err_group, string $err_reason) {
 		$this->err_group = $err_group;
 		$this->err_reason = $err_reason;
 	}
@@ -31,9 +36,9 @@ class P2PActionPaymentResponseError implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -41,30 +46,60 @@ class P2PActionPaymentResponseError implements \JsonSerializable {
 
 		$result['err_reason'] = $this->err_reason;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PActionPaymentResponseError {
-		if(\array_key_exists('err_group', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('err_group', $arr)) {
 			$err_group = $arr['err_group'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'err_group' not specified");
 		}
-		$err_group = $err_group !== null ? (string)$err_group : null;
+		$err_group = $err_group === null ? null : (string)$err_group;
 
-		if(\array_key_exists('err_reason', $arr)){
+		if (\array_key_exists('err_reason', $arr)) {
 			$err_reason = $arr['err_reason'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'err_reason' not specified");
 		}
-		$err_reason = $err_reason !== null ? (string)$err_reason : null;
+		$err_reason = $err_reason === null ? null : (string)$err_reason;
 
-		return new static($err_group, $err_reason);
+		return new self($err_group, $err_reason);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->err_group === $x->err_group
+
+			&& $this->err_reason === $x->err_reason;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

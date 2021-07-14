@@ -4,36 +4,41 @@
 
 namespace dface\IPayMasterPass;
 
-class ActionPmtInfo implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $acc;
-	/** @var int */
-	private $invoice;
+final class ActionPmtInfo implements JsonSerializable {
 
-	public function __construct(?string $acc, ?int $invoice){
+	private ?string $acc;
+	private ?int $invoice;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string|null $acc
+	 * @param int|null $invoice
+	 */
+	public function __construct(?string $acc, ?int $invoice) {
 		$this->acc = $acc;
 		$this->invoice = $invoice;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getAcc() : ?string {
 		return $this->acc;
 	}
 
 	/**
-	 * @return int
+	 * @return int|null
 	 */
 	public function getInvoice() : ?int {
 		return $this->invoice;
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -41,28 +46,52 @@ class ActionPmtInfo implements \JsonSerializable {
 
 		$result['invoice'] = $this->invoice;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : ActionPmtInfo {
-		$acc = null;
-		if(\array_key_exists('acc', $arr)){
-			$acc = $arr['acc'];
-		}
-		$acc = $acc !== null ? (string)$acc : null;
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		$acc = $arr['acc'] ?? null;
+		$acc = $acc === null ? null : (string)$acc;
 
-		$invoice = null;
-		if(\array_key_exists('invoice', $arr)){
-			$invoice = $arr['invoice'];
-		}
-		$invoice = $invoice !== null ? (int)$invoice : null;
+		$invoice = $arr['invoice'] ?? null;
+		$invoice = $invoice === null ? null : (int)$invoice;
 
-		return new static($acc, $invoice);
+		return new self($acc, $invoice);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->acc === $x->acc
+
+			&& $this->invoice === $x->invoice;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

@@ -4,14 +4,19 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PPaymentFunds implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var int */
-	private $invoice;
-	/** @var string */
-	private $currency;
+final class P2PPaymentFunds implements JsonSerializable {
 
-	public function __construct(int $invoice, string $currency){
+	private int $invoice;
+	private string $currency;
+	private bool $_dirty = false;
+
+	/**
+	 * @param int $invoice
+	 * @param string $currency
+	 */
+	public function __construct(int $invoice, string $currency) {
 		$this->invoice = $invoice;
 		$this->currency = $currency;
 	}
@@ -31,9 +36,9 @@ class P2PPaymentFunds implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -41,30 +46,60 @@ class P2PPaymentFunds implements \JsonSerializable {
 
 		$result['currency'] = $this->currency;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PPaymentFunds {
-		if(\array_key_exists('invoice', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('invoice', $arr)) {
 			$invoice = $arr['invoice'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'invoice' not specified");
 		}
-		$invoice = $invoice !== null ? (int)$invoice : null;
+		$invoice = $invoice === null ? null : (int)$invoice;
 
-		if(\array_key_exists('currency', $arr)){
+		if (\array_key_exists('currency', $arr)) {
 			$currency = $arr['currency'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'currency' not specified");
 		}
-		$currency = $currency !== null ? (string)$currency : null;
+		$currency = $currency === null ? null : (string)$currency;
 
-		return new static($invoice, $currency);
+		return new self($invoice, $currency);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->invoice === $x->invoice
+
+			&& $this->currency === $x->currency;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

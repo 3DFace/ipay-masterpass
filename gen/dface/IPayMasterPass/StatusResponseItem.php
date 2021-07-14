@@ -4,16 +4,21 @@
 
 namespace dface\IPayMasterPass;
 
-class StatusResponseItem implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $type;
-	/** @var string */
-	private $msisdn;
-	/** @var StatusResponseItemEnvelope */
-	private $response;
+final class StatusResponseItem implements JsonSerializable {
 
-	public function __construct(string $type, string $msisdn, StatusResponseItemEnvelope $response){
+	private string $type;
+	private string $msisdn;
+	private StatusResponseItemEnvelope $response;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $type
+	 * @param string $msisdn
+	 * @param StatusResponseItemEnvelope $response
+	 */
+	public function __construct(string $type, string $msisdn, StatusResponseItemEnvelope $response) {
 		$this->type = $type;
 		$this->msisdn = $msisdn;
 		$this->response = $response;
@@ -41,9 +46,9 @@ class StatusResponseItem implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -53,45 +58,76 @@ class StatusResponseItem implements \JsonSerializable {
 
 		$result['response'] = $this->response->jsonSerialize();
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : StatusResponseItem {
-		if(\array_key_exists('type', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('type', $arr)) {
 			$type = $arr['type'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'type' not specified");
 		}
-		$type = $type !== null ? (string)$type : null;
+		$type = $type === null ? null : (string)$type;
 
-		if(\array_key_exists('msisdn', $arr)){
+		if (\array_key_exists('msisdn', $arr)) {
 			$msisdn = $arr['msisdn'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
-		$msisdn = $msisdn !== null ? (string)$msisdn : null;
+		$msisdn = $msisdn === null ? null : (string)$msisdn;
 
-		if(\array_key_exists('response', $arr)){
+		if (\array_key_exists('response', $arr)) {
 			$response = $arr['response'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'response' not specified");
 		}
-		$response = $response !== null ? \call_user_func(function ($val){
-			$x = \json_decode($val, true, 512, 0);
+		$response = $response === null ? null : (static function ($x) {
 			try {
-				$x = $x !== null ? StatusResponseItemEnvelope::deserialize($x) : null;
-			}catch (\Exception $e){
-				throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
+				$decoded = \json_decode($x, true, 512, 0 | JSON_THROW_ON_ERROR);
+			} catch (\Exception $e) {
+				throw new \InvalidArgumentException($e->getMessage(), 0, $e);
 			}
-			return $x;
-		}, $response) : null;
+			return $decoded === null ? null : StatusResponseItemEnvelope::deserialize($decoded);
+		})($response);
 
-		return new static($type, $msisdn, $response);
+		return new self($type, $msisdn, $response);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->type === $x->type
+
+			&& $this->msisdn === $x->msisdn
+
+			&& $this->response == $x->response;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

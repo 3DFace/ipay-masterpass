@@ -4,16 +4,21 @@
 
 namespace dface\IPayMasterPass;
 
-class AgentSettings implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $url;
-	/** @var string */
-	private $merchant_id;
-	/** @var string */
-	private $sign_key;
+final class AgentSettings implements JsonSerializable {
 
-	public function __construct(string $url, string $merchant_id, string $sign_key){
+	private string $url;
+	private string $merchant_id;
+	private string $sign_key;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $url
+	 * @param string $merchant_id
+	 * @param string $sign_key
+	 */
+	public function __construct(string $url, string $merchant_id, string $sign_key) {
 		$this->url = $url;
 		$this->merchant_id = $merchant_id;
 		$this->sign_key = $sign_key;
@@ -41,9 +46,9 @@ class AgentSettings implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -53,37 +58,69 @@ class AgentSettings implements \JsonSerializable {
 
 		$result['sign_key'] = $this->sign_key;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : AgentSettings {
-		if(\array_key_exists('url', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('url', $arr)) {
 			$url = $arr['url'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'url' not specified");
 		}
-		$url = $url !== null ? (string)$url : null;
+		$url = $url === null ? null : (string)$url;
 
-		if(\array_key_exists('merchant_id', $arr)){
+		if (\array_key_exists('merchant_id', $arr)) {
 			$merchant_id = $arr['merchant_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'merchant_id' not specified");
 		}
-		$merchant_id = $merchant_id !== null ? (string)$merchant_id : null;
+		$merchant_id = $merchant_id === null ? null : (string)$merchant_id;
 
-		if(\array_key_exists('sign_key', $arr)){
+		if (\array_key_exists('sign_key', $arr)) {
 			$sign_key = $arr['sign_key'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'sign_key' not specified");
 		}
-		$sign_key = $sign_key !== null ? (string)$sign_key : null;
+		$sign_key = $sign_key === null ? null : (string)$sign_key;
 
-		return new static($url, $merchant_id, $sign_key);
+		return new self($url, $merchant_id, $sign_key);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->url === $x->url
+
+			&& $this->merchant_id === $x->merchant_id
+
+			&& $this->sign_key === $x->sign_key;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

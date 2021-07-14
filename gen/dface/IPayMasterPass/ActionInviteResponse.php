@@ -4,14 +4,19 @@
 
 namespace dface\IPayMasterPass;
 
-class ActionInviteResponse implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $verify;
-	/** @var string */
-	private $token;
+final class ActionInviteResponse implements JsonSerializable {
 
-	public function __construct(string $verify, string $token){
+	private string $verify;
+	private string $token;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $verify
+	 * @param string $token
+	 */
+	public function __construct(string $verify, string $token) {
 		$this->verify = $verify;
 		$this->token = $token;
 	}
@@ -31,9 +36,9 @@ class ActionInviteResponse implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -41,30 +46,60 @@ class ActionInviteResponse implements \JsonSerializable {
 
 		$result['token'] = $this->token;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : ActionInviteResponse {
-		if(\array_key_exists('verify', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('verify', $arr)) {
 			$verify = $arr['verify'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'verify' not specified");
 		}
-		$verify = $verify !== null ? (string)$verify : null;
+		$verify = $verify === null ? null : (string)$verify;
 
-		if(\array_key_exists('token', $arr)){
+		if (\array_key_exists('token', $arr)) {
 			$token = $arr['token'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'token' not specified");
 		}
-		$token = $token !== null ? (string)$token : null;
+		$token = $token === null ? null : (string)$token;
 
-		return new static($verify, $token);
+		return new self($verify, $token);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->verify === $x->verify
+
+			&& $this->token === $x->token;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

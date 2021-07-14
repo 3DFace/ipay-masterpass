@@ -4,12 +4,17 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PPaymentTarget implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $pan;
+final class P2PPaymentTarget implements JsonSerializable {
 
-	public function __construct(string $pan){
+	private string $pan;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $pan
+	 */
+	public function __construct(string $pan) {
 		$this->pan = $pan;
 	}
 
@@ -21,31 +26,59 @@ class P2PPaymentTarget implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
 		$result['pan'] = $this->pan;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PPaymentTarget {
-		if(\array_key_exists('pan', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('pan', $arr)) {
 			$pan = $arr['pan'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'pan' not specified");
 		}
-		$pan = $pan !== null ? (string)$pan : null;
+		$pan = $pan === null ? null : (string)$pan;
 
-		return new static($pan);
+		return new self($pan);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->pan === $x->pan;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

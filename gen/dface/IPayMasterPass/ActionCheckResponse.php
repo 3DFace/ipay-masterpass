@@ -4,12 +4,17 @@
 
 namespace dface\IPayMasterPass;
 
-class ActionCheckResponse implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $user_status;
+final class ActionCheckResponse implements JsonSerializable {
 
-	public function __construct(string $user_status){
+	private string $user_status;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $user_status
+	 */
+	public function __construct(string $user_status) {
 		$this->user_status = $user_status;
 	}
 
@@ -21,31 +26,59 @@ class ActionCheckResponse implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
 		$result['user_status'] = $this->user_status;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : ActionCheckResponse {
-		if(\array_key_exists('user_status', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('user_status', $arr)) {
 			$user_status = $arr['user_status'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'user_status' not specified");
 		}
-		$user_status = $user_status !== null ? (string)$user_status : null;
+		$user_status = $user_status === null ? null : (string)$user_status;
 
-		return new static($user_status);
+		return new self($user_status);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->user_status === $x->user_status;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

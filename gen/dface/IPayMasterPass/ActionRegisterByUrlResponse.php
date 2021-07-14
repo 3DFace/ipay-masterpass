@@ -4,12 +4,17 @@
 
 namespace dface\IPayMasterPass;
 
-class ActionRegisterByUrlResponse implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $url;
+final class ActionRegisterByUrlResponse implements JsonSerializable {
 
-	public function __construct(string $url){
+	private string $url;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $url
+	 */
+	public function __construct(string $url) {
 		$this->url = $url;
 	}
 
@@ -21,31 +26,59 @@ class ActionRegisterByUrlResponse implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
 		$result['url'] = $this->url;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : ActionRegisterByUrlResponse {
-		if(\array_key_exists('url', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('url', $arr)) {
 			$url = $arr['url'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'url' not specified");
 		}
-		$url = $url !== null ? (string)$url : null;
+		$url = $url === null ? null : (string)$url;
 
-		return new static($url);
+		return new self($url);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->url === $x->url;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

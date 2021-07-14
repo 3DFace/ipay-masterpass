@@ -4,16 +4,21 @@
 
 namespace dface\IPayMasterPass;
 
-class Request implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var RequestAuth */
-	private $auth;
-	/** @var string */
-	private $action;
-	/** @var mixed */
+final class Request implements JsonSerializable {
+
+	private RequestAuth $auth;
+	private string $action;
 	private $body;
+	private bool $_dirty = false;
 
-	public function __construct(RequestAuth $auth, string $action, $body){
+	/**
+	 * @param RequestAuth $auth
+	 * @param string $action
+	 * @param mixed $body
+	 */
+	public function __construct(RequestAuth $auth, string $action, $body) {
 		$this->auth = $auth;
 		$this->action = $action;
 		$this->body = $body;
@@ -41,9 +46,9 @@ class Request implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -53,40 +58,67 @@ class Request implements \JsonSerializable {
 
 		$result['body'] = $this->body;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : Request {
-		if(\array_key_exists('auth', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('auth', $arr)) {
 			$auth = $arr['auth'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'auth' not specified");
 		}
-		try {
-			$auth = $auth !== null ? RequestAuth::deserialize($auth) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$auth = $auth === null ? null : RequestAuth::deserialize($auth);
 
-		if(\array_key_exists('action', $arr)){
+		if (\array_key_exists('action', $arr)) {
 			$action = $arr['action'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'action' not specified");
 		}
-		$action = $action !== null ? (string)$action : null;
+		$action = $action === null ? null : (string)$action;
 
-		if(\array_key_exists('body', $arr)){
+		if (\array_key_exists('body', $arr)) {
 			$body = $arr['body'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'body' not specified");
 		}
-		
-		return new static($auth, $action, $body);
+		return new self($auth, $action, $body);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->auth == $x->auth
+
+			&& $this->action === $x->action
+
+			&& $this->body === $x->body;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

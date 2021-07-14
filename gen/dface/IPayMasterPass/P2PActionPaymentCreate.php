@@ -4,21 +4,26 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PActionPaymentCreate implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $user_id;
-	/** @var string */
-	private $msisdn;
-	/** @var P2PPaymentSender */
-	private $sender;
-	/** @var P2PPaymentTarget */
-	private $target;
-	/** @var P2PPaymentFunds */
-	private $funds;
-	/** @var P2PPaymentNotification[] */
-	private $notifications;
+final class P2PActionPaymentCreate implements JsonSerializable {
 
+	private string $user_id;
+	private string $msisdn;
+	private P2PPaymentSender $sender;
+	private P2PPaymentTarget $target;
+	private P2PPaymentFunds $funds;
+	private array $notifications;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $user_id
+	 * @param string $msisdn
+	 * @param P2PPaymentSender $sender
+	 * @param P2PPaymentTarget $target
+	 * @param P2PPaymentFunds $funds
+	 * @param P2PPaymentNotification[] $notifications
+	 */
 	public function __construct(
 		string $user_id,
 		string $msisdn,
@@ -26,7 +31,7 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 		P2PPaymentTarget $target,
 		P2PPaymentFunds $funds,
 		array $notifications
-	){
+	) {
 		$this->user_id = $user_id;
 		$this->msisdn = $msisdn;
 		$this->sender = $sender;
@@ -78,9 +83,9 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -94,81 +99,121 @@ class P2PActionPaymentCreate implements \JsonSerializable {
 
 		$result['funds'] = $this->funds->jsonSerialize();
 
-		$result['notifications'] = \array_map(function (P2PPaymentNotification $x){
+		$result['notifications'] = \array_map(static function (P2PPaymentNotification $x) {
 			return $x->jsonSerialize();
 		}, $this->notifications);
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PActionPaymentCreate {
-		if(\array_key_exists('user_id', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('user_id', $arr)) {
 			$user_id = $arr['user_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'user_id' not specified");
 		}
-		$user_id = $user_id !== null ? (string)$user_id : null;
+		$user_id = $user_id === null ? null : (string)$user_id;
 
-		if(\array_key_exists('msisdn', $arr)){
+		if (\array_key_exists('msisdn', $arr)) {
 			$msisdn = $arr['msisdn'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'msisdn' not specified");
 		}
-		$msisdn = $msisdn !== null ? (string)$msisdn : null;
+		$msisdn = $msisdn === null ? null : (string)$msisdn;
 
-		if(\array_key_exists('sender', $arr)){
+		if (\array_key_exists('sender', $arr)) {
 			$sender = $arr['sender'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'sender' not specified");
 		}
-		try {
-			$sender = $sender !== null ? P2PPaymentSender::deserialize($sender) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$sender = $sender === null ? null : P2PPaymentSender::deserialize($sender);
 
-		if(\array_key_exists('target', $arr)){
+		if (\array_key_exists('target', $arr)) {
 			$target = $arr['target'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'target' not specified");
 		}
-		try {
-			$target = $target !== null ? P2PPaymentTarget::deserialize($target) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$target = $target === null ? null : P2PPaymentTarget::deserialize($target);
 
-		if(\array_key_exists('funds', $arr)){
+		if (\array_key_exists('funds', $arr)) {
 			$funds = $arr['funds'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'funds' not specified");
 		}
-		try {
-			$funds = $funds !== null ? P2PPaymentFunds::deserialize($funds) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$funds = $funds === null ? null : P2PPaymentFunds::deserialize($funds);
 
-		if(\array_key_exists('notifications', $arr)){
+		if (\array_key_exists('notifications', $arr)) {
 			$notifications = $arr['notifications'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'notifications' not specified");
 		}
-		$notifications = $notifications !== null ? \array_map(function ($x){
-			try {
-				$x = $x !== null ? P2PPaymentNotification::deserialize($x) : null;
-			}catch (\Exception $e){
-				throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-			}
-			return $x;
-		}, $notifications) : null;
+		$notifications = $notifications === null ? null : \array_map(static function ($x) {
+			return $x === null ? null : P2PPaymentNotification::deserialize($x);
+		}, $notifications);
 
-		return new static($user_id, $msisdn, $sender, $target, $funds, $notifications);
+		return new self(
+			$user_id,
+			$msisdn,
+			$sender,
+			$target,
+			$funds,
+			$notifications);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->user_id === $x->user_id
+
+			&& $this->msisdn === $x->msisdn
+
+			&& $this->sender->equals($x->sender)
+
+			&& $this->target->equals($x->target)
+
+			&& $this->funds->equals($x->funds)
+
+			&& \count($this->notifications) === \count($x->notifications)
+			&& (static function ($arr1, $arr2) {
+				foreach ($arr1 as $i => $v1) {
+					if (!isset($arr2[$i])) {
+						return false;
+					}
+					$v2 = $arr2[$i];
+					$v_eq = $v1->equals($v2);
+					if (!$v_eq) {
+						return false;
+					}
+				}
+				return true;
+			})($this->notifications, $x->notifications);
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

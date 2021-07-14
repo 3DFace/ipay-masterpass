@@ -4,12 +4,17 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PPaymentSender implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $card_alias;
+final class P2PPaymentSender implements JsonSerializable {
 
-	public function __construct(string $card_alias){
+	private string $card_alias;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $card_alias
+	 */
+	public function __construct(string $card_alias) {
 		$this->card_alias = $card_alias;
 	}
 
@@ -21,31 +26,59 @@ class P2PPaymentSender implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
 		$result['card_alias'] = $this->card_alias;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PPaymentSender {
-		if(\array_key_exists('card_alias', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('card_alias', $arr)) {
 			$card_alias = $arr['card_alias'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'card_alias' not specified");
 		}
-		$card_alias = $card_alias !== null ? (string)$card_alias : null;
+		$card_alias = $card_alias === null ? null : (string)$card_alias;
 
-		return new static($card_alias);
+		return new self($card_alias);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->card_alias === $x->card_alias;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

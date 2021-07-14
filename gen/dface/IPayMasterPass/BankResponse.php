@@ -4,46 +4,51 @@
 
 namespace dface\IPayMasterPass;
 
-class BankResponse implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $bank_id;
-	/** @var string */
-	private $rc;
-	/** @var string */
-	private $action;
+final class BankResponse implements JsonSerializable {
 
-	public function __construct(?string $bank_id, ?string $rc, ?string $action){
+	private ?string $bank_id;
+	private ?string $rc;
+	private ?string $action;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string|null $bank_id
+	 * @param string|null $rc
+	 * @param string|null $action
+	 */
+	public function __construct(?string $bank_id, ?string $rc, ?string $action) {
 		$this->bank_id = $bank_id;
 		$this->rc = $rc;
 		$this->action = $action;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getBankId() : ?string {
 		return $this->bank_id;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getRc() : ?string {
 		return $this->rc;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getAction() : ?string {
 		return $this->action;
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -53,34 +58,57 @@ class BankResponse implements \JsonSerializable {
 
 		$result['action'] = $this->action;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : BankResponse {
-		$bank_id = null;
-		if(\array_key_exists('bank_id', $arr)){
-			$bank_id = $arr['bank_id'];
-		}
-		$bank_id = $bank_id !== null ? (string)$bank_id : null;
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		$bank_id = $arr['bank_id'] ?? null;
+		$bank_id = $bank_id === null ? null : (string)$bank_id;
 
-		$rc = null;
-		if(\array_key_exists('rc', $arr)){
-			$rc = $arr['rc'];
-		}
-		$rc = $rc !== null ? (string)$rc : null;
+		$rc = $arr['rc'] ?? null;
+		$rc = $rc === null ? null : (string)$rc;
 
-		$action = null;
-		if(\array_key_exists('action', $arr)){
-			$action = $arr['action'];
-		}
-		$action = $action !== null ? (string)$action : null;
+		$action = $arr['action'] ?? null;
+		$action = $action === null ? null : (string)$action;
 
-		return new static($bank_id, $rc, $action);
+		return new self($bank_id, $rc, $action);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->bank_id === $x->bank_id
+
+			&& $this->rc === $x->rc
+
+			&& $this->action === $x->action;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

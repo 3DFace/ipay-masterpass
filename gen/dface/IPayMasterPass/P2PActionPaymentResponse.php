@@ -5,32 +5,36 @@
 namespace dface\IPayMasterPass;
 
 use DateTimeImmutable;
+use JsonSerializable;
 
-class P2PActionPaymentResponse implements \JsonSerializable {
+final class P2PActionPaymentResponse implements JsonSerializable {
 
-	/** @var int */
-	private $status;
-	/** @var string */
-	private $pmt_id;
-	/** @var string */
-	private $mch_id;
-	/** @var string */
-	private $guid;
-	/** @var DateTimeImmutable */
-	private $init_date;
-	/** @var DateTimeImmutable */
-	private $pay_date;
-	/** @var P2PActionPaymentResponseInfo */
-	private $info;
-	/** @var string */
-	private $security_rate;
-	/** @var mixed[] */
-	private $security_data;
-	/** @var P2PActionPaymentResponseError */
-	private $error;
-	/** @var string */
-	private $ident;
+	private int $status;
+	private string $pmt_id;
+	private string $mch_id;
+	private string $guid;
+	private DateTimeImmutable $init_date;
+	private DateTimeImmutable $pay_date;
+	private P2PActionPaymentResponseInfo $info;
+	private ?string $security_rate;
+	private ?array $security_data;
+	private ?P2PActionPaymentResponseError $error;
+	private ?string $ident;
+	private bool $_dirty = false;
 
+	/**
+	 * @param int $status
+	 * @param string $pmt_id
+	 * @param string $mch_id
+	 * @param string $guid
+	 * @param DateTimeImmutable $init_date
+	 * @param DateTimeImmutable $pay_date
+	 * @param P2PActionPaymentResponseInfo $info
+	 * @param string|null $security_rate
+	 * @param array|null $security_data
+	 * @param P2PActionPaymentResponseError|null $error
+	 * @param string|null $ident
+	 */
 	public function __construct(
 		int $status,
 		string $pmt_id,
@@ -39,11 +43,11 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 		DateTimeImmutable $init_date,
 		DateTimeImmutable $pay_date,
 		P2PActionPaymentResponseInfo $info,
-		$security_rate = null,
+		?string $security_rate = null,
 		?array $security_data = null,
 		?P2PActionPaymentResponseError $error = null,
-		$ident = null
-	){
+		?string $ident = null
+	) {
 		$this->status = $status;
 		$this->pmt_id = $pmt_id;
 		$this->mch_id = $mch_id;
@@ -107,37 +111,37 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getSecurityRate() : ?string {
 		return $this->security_rate;
 	}
 
 	/**
-	 * @return mixed[]
+	 * @return array|null
 	 */
 	public function getSecurityData() : ?array {
 		return $this->security_data;
 	}
 
 	/**
-	 * @return P2PActionPaymentResponseError
+	 * @return P2PActionPaymentResponseError|null
 	 */
 	public function getError() : ?P2PActionPaymentResponseError {
 		return $this->error;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	public function getIdent() : ?string {
 		return $this->ident;
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -157,7 +161,7 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 
 		$result['security_rate'] = $this->security_rate;
 
-		$result['security_data'] = $this->security_data === null ? null : \array_map(function ( $x){
+		$result['security_data'] = $this->security_data === null ? null : \array_map(static function ($x) {
 			return $x;
 		}, $this->security_data);
 
@@ -165,107 +169,167 @@ class P2PActionPaymentResponse implements \JsonSerializable {
 
 		$result['ident'] = $this->ident;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PActionPaymentResponse {
-		if(\array_key_exists('status', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('status', $arr)) {
 			$status = $arr['status'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'status' not specified");
 		}
-		$status = $status !== null ? (int)$status : null;
+		$status = $status === null ? null : (int)$status;
 
-		if(\array_key_exists('pmt_id', $arr)){
+		if (\array_key_exists('pmt_id', $arr)) {
 			$pmt_id = $arr['pmt_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'pmt_id' not specified");
 		}
-		$pmt_id = $pmt_id !== null ? (string)$pmt_id : null;
+		$pmt_id = $pmt_id === null ? null : (string)$pmt_id;
 
-		if(\array_key_exists('mch_id', $arr)){
+		if (\array_key_exists('mch_id', $arr)) {
 			$mch_id = $arr['mch_id'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'mch_id' not specified");
 		}
-		$mch_id = $mch_id !== null ? (string)$mch_id : null;
+		$mch_id = $mch_id === null ? null : (string)$mch_id;
 
-		if(\array_key_exists('guid', $arr)){
+		if (\array_key_exists('guid', $arr)) {
 			$guid = $arr['guid'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'guid' not specified");
 		}
-		$guid = $guid !== null ? (string)$guid : null;
+		$guid = $guid === null ? null : (string)$guid;
 
-		if(\array_key_exists('init_date', $arr)){
+		if (\array_key_exists('init_date', $arr)) {
 			$init_date = $arr['init_date'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'init_date' not specified");
 		}
-		try {
-			$init_date = $init_date !== null ? new DateTimeImmutable($init_date) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException($e->getMessage(), 0, $e);
-		}
+		$init_date = $init_date === null ? null : (static function ($x) {
+			try {
+				return new DateTimeImmutable($x);
+			} catch (\Exception $e) {
+				throw new \InvalidArgumentException($e->getMessage(), 0, $e);
+			}
+		})($init_date);
 
-		if(\array_key_exists('pay_date', $arr)){
+		if (\array_key_exists('pay_date', $arr)) {
 			$pay_date = $arr['pay_date'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'pay_date' not specified");
 		}
-		try {
-			$pay_date = $pay_date !== null ? new DateTimeImmutable($pay_date) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException($e->getMessage(), 0, $e);
-		}
+		$pay_date = $pay_date === null ? null : (static function ($x) {
+			try {
+				return new DateTimeImmutable($x);
+			} catch (\Exception $e) {
+				throw new \InvalidArgumentException($e->getMessage(), 0, $e);
+			}
+		})($pay_date);
 
-		if(\array_key_exists('info', $arr)){
+		if (\array_key_exists('info', $arr)) {
 			$info = $arr['info'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'info' not specified");
 		}
-		try {
-			$info = $info !== null ? P2PActionPaymentResponseInfo::deserialize($info) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$info = $info === null ? null : P2PActionPaymentResponseInfo::deserialize($info);
 
-		$security_rate = null;
-		if(\array_key_exists('security_rate', $arr)){
-			$security_rate = $arr['security_rate'];
-		}
-		$security_rate = $security_rate !== null ? (string)$security_rate : null;
+		$security_rate = $arr['security_rate'] ?? null;
+		$security_rate = $security_rate === null ? null : (string)$security_rate;
 
-		$security_data = null;
-		if(\array_key_exists('security_data', $arr)){
-			$security_data = $arr['security_data'];
-		}
-		$security_data = $security_data !== null ? \array_map(function ($x){
-						return $x;
-		}, $security_data) : null;
+		$security_data = $arr['security_data'] ?? null;
+		$security_data = $security_data === null ? null : \array_map(static function ($x) {
+			return $x;
+		}, $security_data);
 
-		$error = null;
-		if(\array_key_exists('error', $arr)){
-			$error = $arr['error'];
-		}
-		try {
-			$error = $error !== null ? P2PActionPaymentResponseError::deserialize($error) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException('Deserialization error: '.$e->getMessage(), 0, $e);
-		}
+		$error = $arr['error'] ?? null;
+		$error = $error === null ? null : P2PActionPaymentResponseError::deserialize($error);
 
-		$ident = null;
-		if(\array_key_exists('ident', $arr)){
-			$ident = $arr['ident'];
-		}
-		$ident = $ident !== null ? (string)$ident : null;
+		$ident = $arr['ident'] ?? null;
+		$ident = $ident === null ? null : (string)$ident;
 
-		return new static($status, $pmt_id, $mch_id, $guid, $init_date, $pay_date, $info, $security_rate, $security_data, $error, $ident);
+		return new self(
+			$status,
+			$pmt_id,
+			$mch_id,
+			$guid,
+			$init_date,
+			$pay_date,
+			$info,
+			$security_rate,
+			$security_data,
+			$error,
+			$ident);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->status === $x->status
+
+			&& $this->pmt_id === $x->pmt_id
+
+			&& $this->mch_id === $x->mch_id
+
+			&& $this->guid === $x->guid
+
+			&& $this->init_date->getTimestamp() === $x->init_date->getTimestamp()
+
+			&& $this->pay_date->getTimestamp() === $x->pay_date->getTimestamp()
+
+			&& $this->info->equals($x->info)
+
+			&& $this->security_rate === $x->security_rate
+
+			&& (($this->security_data === null && $x->security_data === null)
+				|| ($this->security_data !== null && $x->security_data !== null
+					&& \count($this->security_data) === \count($x->security_data)
+					&& (static function ($arr1, $arr2) {
+						foreach ($arr1 as $i => $v1) {
+							if (!isset($arr2[$i])) {
+								return false;
+							}
+							$v2 = $arr2[$i];
+							$v_eq = $v1 === $v2;
+							if (!$v_eq) {
+								return false;
+							}
+						}
+						return true;
+					})($this->security_data, $x->security_data)))
+
+			&& (($this->error === $x->error)
+				|| ($this->error !== null && $x->error !== null
+					&& $this->error->equals($x->error)))
+
+			&& $this->ident === $x->ident;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

@@ -9,7 +9,7 @@
 		"email": "ponomarev@gmail.com"
 	}],
 	"require": {
-		"php": ">=7.1",
+		"php": ">=7.4",
 		"ext-json": "*",
 		"psr/log": "^1.0",
 		"psr/http-client": "^1.0",

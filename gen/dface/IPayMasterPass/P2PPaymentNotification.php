@@ -4,16 +4,21 @@
 
 namespace dface\IPayMasterPass;
 
-class P2PPaymentNotification implements \JsonSerializable {
+use JsonSerializable;
 
-	/** @var string */
-	private $kind;
-	/** @var string */
-	private $adres;
-	/** @var string */
-	private $text;
+final class P2PPaymentNotification implements JsonSerializable {
 
-	public function __construct(string $kind, string $adres, string $text){
+	private string $kind;
+	private string $adres;
+	private string $text;
+	private bool $_dirty = false;
+
+	/**
+	 * @param string $kind
+	 * @param string $adres
+	 * @param string $text
+	 */
+	public function __construct(string $kind, string $adres, string $text) {
 		$this->kind = $kind;
 		$this->adres = $adres;
 		$this->text = $text;
@@ -41,9 +46,9 @@ class P2PPaymentNotification implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -53,37 +58,69 @@ class P2PPaymentNotification implements \JsonSerializable {
 
 		$result['text'] = $this->text;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : P2PPaymentNotification {
-		if(\array_key_exists('kind', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('kind', $arr)) {
 			$kind = $arr['kind'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'kind' not specified");
 		}
-		$kind = $kind !== null ? (string)$kind : null;
+		$kind = $kind === null ? null : (string)$kind;
 
-		if(\array_key_exists('adres', $arr)){
+		if (\array_key_exists('adres', $arr)) {
 			$adres = $arr['adres'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'adres' not specified");
 		}
-		$adres = $adres !== null ? (string)$adres : null;
+		$adres = $adres === null ? null : (string)$adres;
 
-		if(\array_key_exists('text', $arr)){
+		if (\array_key_exists('text', $arr)) {
 			$text = $arr['text'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'text' not specified");
 		}
-		$text = $text !== null ? (string)$text : null;
+		$text = $text === null ? null : (string)$text;
 
-		return new static($kind, $adres, $text);
+		return new self($kind, $adres, $text);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->kind === $x->kind
+
+			&& $this->adres === $x->adres
+
+			&& $this->text === $x->text;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }

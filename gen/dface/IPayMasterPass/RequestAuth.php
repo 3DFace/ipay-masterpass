@@ -5,17 +5,21 @@
 namespace dface\IPayMasterPass;
 
 use DateTimeImmutable;
+use JsonSerializable;
 
-class RequestAuth implements \JsonSerializable {
+final class RequestAuth implements JsonSerializable {
 
-	/** @var string */
-	private $login;
-	/** @var DateTimeImmutable */
-	private $time;
-	/** @var string */
-	private $sign;
+	private string $login;
+	private DateTimeImmutable $time;
+	private string $sign;
+	private bool $_dirty = false;
 
-	public function __construct(string $login, DateTimeImmutable $time, string $sign){
+	/**
+	 * @param string $login
+	 * @param DateTimeImmutable $time
+	 * @param string $sign
+	 */
+	public function __construct(string $login, DateTimeImmutable $time, string $sign) {
 		$this->login = $login;
 		$this->time = $time;
 		$this->sign = $sign;
@@ -43,9 +47,9 @@ class RequestAuth implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return array|\stdClass
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize() {
 
 		$result = [];
 
@@ -55,41 +59,75 @@ class RequestAuth implements \JsonSerializable {
 
 		$result['sign'] = $this->sign;
 
-		return $result;
+		return $result ?: new \stdClass();
 	}
 
 	/**
-	 * @param array $arr
+	 * @param object|array $data
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize(array $arr) : RequestAuth {
-		if(\array_key_exists('login', $arr)){
+	public static function deserialize($data) : self {
+		$arr = (array)$data;
+		if (\array_key_exists('login', $arr)) {
 			$login = $arr['login'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'login' not specified");
 		}
-		$login = $login !== null ? (string)$login : null;
+		$login = $login === null ? null : (string)$login;
 
-		if(\array_key_exists('time', $arr)){
+		if (\array_key_exists('time', $arr)) {
 			$time = $arr['time'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'time' not specified");
 		}
-		try {
-			$time = $time !== null ? new DateTimeImmutable($time) : null;
-		}catch (\Exception $e){
-			throw new \InvalidArgumentException($e->getMessage(), 0, $e);
-		}
+		$time = $time === null ? null : (static function ($x) {
+			try {
+				return new DateTimeImmutable($x);
+			} catch (\Exception $e) {
+				throw new \InvalidArgumentException($e->getMessage(), 0, $e);
+			}
+		})($time);
 
-		if(\array_key_exists('sign', $arr)){
+		if (\array_key_exists('sign', $arr)) {
 			$sign = $arr['sign'];
-		}else{
+		} else {
 			throw new \InvalidArgumentException("Property 'sign' not specified");
 		}
-		$sign = $sign !== null ? (string)$sign : null;
+		$sign = $sign === null ? null : (string)$sign;
 
-		return new static($login, $time, $sign);
+		return new self($login, $time, $sign);
+	}
+
+	/**
+	 * @param self|null $x
+	 * @return bool
+	 */
+	public function equals(?self $x) : bool {
+
+		return $x !== null
+
+			&& $this->login === $x->login
+
+			&& $this->time->getTimestamp() === $x->time->getTimestamp()
+
+			&& $this->sign === $x->sign;
+	}
+
+	public function isDirty() : bool {
+		return $this->_dirty;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function washed() : self {
+		if (!$this->_dirty) {
+			return $this;
+		}
+		$x = clone $this;
+		$x->_dirty = false;
+		return $x;
 	}
 
 }
