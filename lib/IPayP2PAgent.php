@@ -5,8 +5,7 @@ namespace dface\IPayMasterPass;
 class IPayP2PAgent
 {
 
-	/** @var IPayAgentClient */
-	private $agentClient;
+	private IPayAgentClient $agentClient;
 
 	public function __construct(IPayAgentClient $agentClient)
 	{

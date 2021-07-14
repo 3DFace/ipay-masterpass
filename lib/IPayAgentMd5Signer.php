@@ -1,13 +1,11 @@
 <?php
-/* author: Ponomarev Denis <ponomarev@gmail.com> */
 
 namespace dface\IPayMasterPass;
 
 class IPayAgentMd5Signer implements IPayAgentSigner
 {
 
-	/** @var AgentSettings */
-	private $settings;
+	private AgentSettings $settings;
 
 	public function __construct(AgentSettings $settings)
 	{
@@ -16,7 +14,7 @@ class IPayAgentMd5Signer implements IPayAgentSigner
 
 	public function sign(\DateTimeImmutable $time) : string
 	{
-		return md5($time->format('Y-m-d H:i:s').$this->settings->getSignKey());
+		return \md5($time->format('Y-m-d H:i:s').$this->settings->getSignKey());
 	}
 
 }

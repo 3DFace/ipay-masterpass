@@ -1,34 +1,27 @@
 <?php
-/* author: Ponomarev Denis <ponomarev@gmail.com> */
 
 namespace dface\IPayMasterPass;
 
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 class IPayAgentClient
 {
 
-	/** @var AgentSettings */
-	private $settings;
-	/** @var ClientInterface */
-	private $client;
-	/** @var ServerRequestFactoryInterface */
-	private $requestFactory;
+	private AgentSettings $settings;
+	private ClientInterface $client;
+	private RequestFactoryInterface $requestFactory;
 	/** @var callable */
 	private $stringStreamFactory;
-	/** @var LoggerInterface */
-	private $logger;
-	/** @var IPayTimeService */
-	private $timeService;
-	/** @var IPayAgentSigner */
-	private $agentSigner;
+	private LoggerInterface $logger;
+	private IPayTimeService $timeService;
+	private IPayAgentSigner $agentSigner;
 
 	public function __construct(
 		AgentSettings $settings,
 		ClientInterface $client,
-		ServerRequestFactoryInterface $requestFactory,
+		RequestFactoryInterface $requestFactory,
 		callable $stringStreamFactory,
 		LoggerInterface $logger,
 		IPayTimeService $timeService,
@@ -60,22 +53,21 @@ class IPayAgentClient
 
 		$request_arr = ['request' => $request->jsonSerialize()];
 
-		$json_request = \json_encode($request_arr, JSON_UNESCAPED_UNICODE);
-		if ($json_request === null) {
-			$log_req = \print_r($request, true);
-			$err_msg = \json_last_error_msg();
-			$this->logger->error("Cant json-serialize '$actionName' request: $log_req, \n$err_msg");
+		try {
+			$json_request = \json_encode($request_arr, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+			$log_data = $request_arr;
+			unset($log_data['request']['auth']);
+			$this->logger->info("$actionName: ".\json_encode($log_data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
+		} catch (\JsonException $e) {
+			$err_msg = $e->getMessage();
+			$this->logger->error("Cant json-serialize '$actionName' request: \n$err_msg");
 			throw new IPayAgentError('Invalid Request');
 		}
-
-		$log_data = $request_arr;
-		unset($log_data['request']['auth']);
-		$this->logger->info("$actionName: ".\json_encode($log_data, JSON_UNESCAPED_UNICODE));
 
 		try{
 			$body_stream = ($this->stringStreamFactory)($json_request);
 			$http_request = $this->requestFactory
-				->createServerRequest('POST', $this->settings->getUrl())
+				->createRequest('POST', $this->settings->getUrl())
 				->withBody($body_stream);
 			$http_response = $this->client->sendRequest($http_request);
 			$response_json = $http_response->getBody()->getContents();
@@ -85,8 +77,9 @@ class IPayAgentClient
 			throw new IPayAgentError("'$actionName' failed: ".$e->getMessage()."\n");
 		}
 
-		$response_arr = \json_decode($response_json, true);
-		if ($response_arr === null) {
+		try {
+			$response_arr = \json_decode($response_json, true, 512, JSON_THROW_ON_ERROR);
+		} catch (\JsonException $e) {
 			$this->logger->error("Invalid '$actionName' response format");
 			throw new IPayAgentError("Invalid '$actionName' response format");
 		}

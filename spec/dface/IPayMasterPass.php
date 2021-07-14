@@ -7,6 +7,7 @@ use dface\CodeGen\DateTimeType;
 use dface\CodeGen\DynamicTypeDef;
 use dface\CodeGen\JsonType;
 
+/** @noinspection SpellCheckingInspection */
 return [
 
 	'AgentSettings' => [

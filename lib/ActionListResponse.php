@@ -6,22 +6,18 @@ class ActionListResponse implements \JsonSerializable
 {
 
 	/** @var CardInfo[] */
-	private $cards;
+	private array $cards;
 
-	/**
-	 * ActionListResponse constructor.
-	 * @param CardInfo[] $cards
-	 */
 	public function __construct(array $cards)
 	{
 		$this->cards = $cards;
 	}
 
 	/**
-	 * @return array|mixed
+	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	public function jsonSerialize()
+	public function jsonSerialize() : array
 	{
 		return \array_map(static function (CardInfo $view) {
 			return $view->jsonSerialize();
