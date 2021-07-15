@@ -4,6 +4,7 @@ namespace dface\IPayMasterPass;
 
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 class IPayAgentClient
@@ -12,8 +13,7 @@ class IPayAgentClient
 	private AgentSettings $settings;
 	private ClientInterface $client;
 	private RequestFactoryInterface $requestFactory;
-	/** @var callable */
-	private $stringStreamFactory;
+	private StreamFactoryInterface $streamFactory;
 	private LoggerInterface $logger;
 	private IPayTimeService $timeService;
 	private IPayAgentSigner $agentSigner;
@@ -22,7 +22,7 @@ class IPayAgentClient
 		AgentSettings $settings,
 		ClientInterface $client,
 		RequestFactoryInterface $requestFactory,
-		callable $stringStreamFactory,
+		StreamFactoryInterface $streamFactory,
 		LoggerInterface $logger,
 		IPayTimeService $timeService,
 		IPayAgentSigner $agentSigner
@@ -30,7 +30,7 @@ class IPayAgentClient
 		$this->settings = $settings;
 		$this->client = $client;
 		$this->requestFactory = $requestFactory;
-		$this->stringStreamFactory = $stringStreamFactory;
+		$this->streamFactory = $streamFactory;
 		$this->logger = $logger;
 		$this->timeService = $timeService;
 		$this->agentSigner = $agentSigner;
@@ -65,7 +65,7 @@ class IPayAgentClient
 		}
 
 		try{
-			$body_stream = ($this->stringStreamFactory)($json_request);
+			$body_stream = $this->streamFactory->createStream($json_request);
 			$http_request = $this->requestFactory
 				->createRequest('POST', $this->settings->getUrl())
 				->withBody($body_stream);
