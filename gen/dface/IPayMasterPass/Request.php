@@ -45,10 +45,7 @@ final class Request implements JsonSerializable {
 		return $this->body;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -66,7 +63,7 @@ final class Request implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('auth', $arr)) {
 			$auth = $arr['auth'];
@@ -98,7 +95,7 @@ final class Request implements JsonSerializable {
 
 		return $x !== null
 
-			&& $this->auth == $x->auth
+			&& $this->auth->equals($x->auth)
 
 			&& $this->action === $x->action
 

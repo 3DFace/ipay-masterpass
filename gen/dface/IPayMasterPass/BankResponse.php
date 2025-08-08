@@ -45,10 +45,7 @@ final class BankResponse implements JsonSerializable {
 		return $this->action;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -66,7 +63,7 @@ final class BankResponse implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		$bank_id = $arr['bank_id'] ?? null;
 		$bank_id = $bank_id === null ? null : (string)$bank_id;

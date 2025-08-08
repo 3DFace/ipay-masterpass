@@ -35,10 +35,7 @@ final class P2PPaymentFunds implements JsonSerializable {
 		return $this->currency;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -54,7 +51,7 @@ final class P2PPaymentFunds implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('invoice', $arr)) {
 			$invoice = $arr['invoice'];

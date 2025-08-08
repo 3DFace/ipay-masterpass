@@ -45,10 +45,7 @@ final class AgentSettings implements JsonSerializable {
 		return $this->sign_key;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -66,7 +63,7 @@ final class AgentSettings implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('url', $arr)) {
 			$url = $arr['url'];

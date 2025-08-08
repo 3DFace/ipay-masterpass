@@ -45,10 +45,7 @@ final class StatusResponseItem implements JsonSerializable {
 		return $this->response;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -66,7 +63,7 @@ final class StatusResponseItem implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('type', $arr)) {
 			$type = $arr['type'];
@@ -111,7 +108,7 @@ final class StatusResponseItem implements JsonSerializable {
 
 			&& $this->msisdn === $x->msisdn
 
-			&& $this->response == $x->response;
+			&& $this->response->equals($x->response);
 	}
 
 	public function isDirty() : bool {

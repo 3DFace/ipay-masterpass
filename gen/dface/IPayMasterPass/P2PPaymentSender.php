@@ -25,10 +25,7 @@ final class P2PPaymentSender implements JsonSerializable {
 		return $this->card_alias;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -42,7 +39,7 @@ final class P2PPaymentSender implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('card_alias', $arr)) {
 			$card_alias = $arr['card_alias'];

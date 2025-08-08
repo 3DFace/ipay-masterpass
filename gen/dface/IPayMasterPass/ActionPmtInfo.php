@@ -35,10 +35,7 @@ final class ActionPmtInfo implements JsonSerializable {
 		return $this->invoice;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -54,7 +51,7 @@ final class ActionPmtInfo implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		$acc = $arr['acc'] ?? null;
 		$acc = $acc === null ? null : (string)$acc;

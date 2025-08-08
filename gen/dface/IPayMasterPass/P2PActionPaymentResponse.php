@@ -138,10 +138,7 @@ final class P2PActionPaymentResponse implements JsonSerializable {
 		return $this->ident;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -165,7 +162,7 @@ final class P2PActionPaymentResponse implements JsonSerializable {
 			return $x;
 		}, $this->security_data);
 
-		$result['error'] = $this->error === null ? null : $this->error->jsonSerialize();
+		$result['error'] = $this->error?->jsonSerialize();
 
 		$result['ident'] = $this->ident;
 
@@ -177,7 +174,7 @@ final class P2PActionPaymentResponse implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('status', $arr)) {
 			$status = $arr['status'];

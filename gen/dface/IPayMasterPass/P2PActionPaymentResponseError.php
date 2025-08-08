@@ -35,10 +35,7 @@ final class P2PActionPaymentResponseError implements JsonSerializable {
 		return $this->err_reason;
 	}
 
-	/**
-	 * @return array|\stdClass
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize() : array|object {
 
 		$result = [];
 
@@ -54,7 +51,7 @@ final class P2PActionPaymentResponseError implements JsonSerializable {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public static function deserialize($data) : self {
+	public static function deserialize(object|array $data) : self {
 		$arr = (array)$data;
 		if (\array_key_exists('err_group', $arr)) {
 			$err_group = $arr['err_group'];
